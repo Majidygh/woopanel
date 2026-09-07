@@ -1,0 +1,248 @@
+<?php
+/**
+ * Read-only WooCommerce data layer for the panel.
+ *
+ * @package WooPanel
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * All WooPanel data reads go through this class.
+ */
+class WooPanel_Data {
+
+	/**
+	 * Whether WooCommerce is active.
+	 *
+	 * @return bool
+	 */
+	public static function is_woo() {
+		return class_exists( 'WooCommerce' ) && function_exists( 'wc_get_orders' );
+	}
+
+	/**
+	 * Require WooCommerce, dying with a friendly admin notice area otherwise.
+	 *
+	 * @return bool
+	 */
+	public static function require_woo() {
+		return self::is_woo();
+	}
+
+	/**
+	 * Dashboard statistics for the current customer.
+	 *
+	 * @param int $user_id User ID.
+	 * @return array
+	 */
+	public static function get_stats( $user_id ) {
+		$defaults = array(
+			'orders_count'  => 0,
+			'total_spent'   => 0.0,
+			'avg_order'     => 0.0,
+			'last_order_id' => 0,
+			'downloads'     => 0,
+		);
+
+		if ( ! self::is_woo() ) {
+			return $defaults;
+		}
+
+		$stats = array(
+			'orders_count'  => (int) wc_get_customer_order_count( $user_id ),
+			'total_spent'   => (float) wc_get_customer_total_spent( $user_id ),
+			'last_order_id' => (int) get_user_meta( $user_id, '_woopanel_last_order_id', true ),
+			'downloads'     => 0,
+		);
+
+		$stats['avg_order'] = $stats['orders_count'] > 0 ? $stats['total_spent'] / $stats['orders_count'] : 0.0;
+
+		if ( $stats['last_order_id'] && function_exists( 'wc_get_customer_available_downloads' ) ) {
+			$downloads        = wc_get_customer_available_downloads( $user_id );
+			$stats['downloads'] = count( $downloads );
+		}
+
+		return $stats;
+	}
+
+	/**
+	 * Recent orders for a customer.
+	 *
+	 * @param int   $user_id User ID.
+	 * @param int   $limit   How many.
+	 * @param array $args    Extra wc_get_orders args (offset, status...).
+	 * @return WC_Order[]
+	 */
+	public static function get_orders( $user_id, $limit = 8, $args = array() ) {
+		if ( ! self::is_woo() ) {
+			return array();
+		}
+
+		$defaults = array(
+			'customer_id' => $user_id,
+			'limit'       => $limit,
+			'orderby'     => 'date',
+			'order'       => 'DESC',
+			'type'        => 'shop_order',
+		);
+
+		// HPOS-safe: use offsets, not paged (paged assumes posts table paging).
+		if ( isset( $args['offset'] ) ) {
+			$defaults['offset'] = max( 0, absint( $args['offset'] ) );
+			unset( $args['offset'] );
+		}
+
+		return wc_get_orders( array_merge( $defaults, $args ) );
+	}
+
+	/**
+	 * Total number of orders for pagination.
+	 *
+	 * @param int   $user_id User ID.
+	 * @param array $args    Extra args (status filter).
+	 * @return int
+	 */
+	public static function count_orders( $user_id, $args = array() ) {
+		if ( ! self::is_woo() ) {
+			return 0;
+		}
+		$query = array_merge(
+			array(
+				'customer_id' => $user_id,
+				'limit'       => -1,
+				'type'        => 'shop_order',
+				'return'      => 'ids',
+			),
+			$args
+		);
+		return count( wc_get_orders( $query ) );
+	}
+
+	/**
+	 * Order rows prepared for templates.
+	 *
+	 * @param WC_Order[] $orders Orders.
+	 * @return array[] Each row: id, number, status, status_label, status_class, date, total.
+	 */
+	public static function order_rows( $orders ) {
+		$rows = array();
+		foreach ( $orders as $order ) {
+			$status = $order->get_status();
+			$rows[] = array(
+				'id'           => $order->get_id(),
+				'number'       => $order->get_order_number(),
+				'status'       => $status,
+				'status_label' => woopanel_status_label( $status ),
+				'status_class' => woopanel_status_class( $status ),
+				'date'         => $order->get_date_created() ? $order->get_date_created()->date_i18n( get_option( 'date_format' ) ) : '',
+				'total'        => $order->get_formatted_order_total(),
+				'item_count'   => $order->get_item_count(),
+			);
+		}
+		return $rows;
+	}
+
+	/**
+	 * Available customer downloads.
+	 *
+	 * @param int $user_id User ID.
+	 * @return array[]
+	 */
+	public static function get_downloads( $user_id ) {
+		if ( ! self::is_woo() || ! function_exists( 'wc_get_customer_available_downloads' ) ) {
+			return array();
+		}
+		$out = array();
+		foreach ( wc_get_customer_available_downloads( $user_id ) as $dl ) {
+			$out[] = array(
+				'name'          => $dl['product_name'],
+				'file'          => $dl['file']['name'],
+				'url'           => $dl['download_url'],
+				'remaining'     => $dl['downloads_remaining'],
+				'expires'       => $dl['access_expires'] ? $dl['access_expires']->date_i18n( get_option( 'date_format' ) ) : '',
+				'order_id'      => $dl['order_id'],
+			);
+		}
+		return $out;
+	}
+
+	/**
+	 * Address fields shared by view + edit forms.
+	 *
+	 * @param string $type 'billing' or 'shipping'.
+	 * @return array[] field definitions
+	 */
+	public static function address_fields( $type ) {
+		if ( ! function_exists( 'WC' ) || ! wc()->countries ) {
+			return array();
+		}
+		$fields = wc()->countries->get_address_fields( '', $type . '_' );
+		$out    = array();
+		foreach ( $fields as $key => $field ) {
+			if ( empty( $field['label'] ) ) {
+				continue;
+			}
+			$out[] = array(
+				'key'      => $key,
+				'label'    => $field['label'],
+				'required' => ! empty( $field['required'] ),
+				'type'     => ! empty( $field['type'] ) ? $field['type'] : 'text',
+			);
+		}
+		return $out;
+	}
+
+	/**
+	 * Saved address values for the current user.
+	 *
+	 * @param int    $user_id User ID.
+	 * @param string $type    'billing' or 'shipping'.
+	 * @return array
+	 */
+	public static function get_address( $user_id, $type ) {
+		$values = array();
+		foreach ( self::address_fields( $type ) as $field ) {
+			$values[ $field['key'] ] = get_user_meta( $user_id, $field['key'], true );
+		}
+		return $values;
+	}
+
+	/**
+	 * Has the customer filled at least one billing field?
+	 *
+	 * @param int $user_id User ID.
+	 * @return bool
+	 */
+	public static function has_address( $user_id ) {
+		$address = self::get_address( $user_id, 'billing' );
+		foreach ( array( 'billing_address_1', 'billing_city', 'billing_phone', 'billing_email' ) as $k ) {
+			if ( ! empty( $address[ $k ] ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Panel navigation items.
+	 *
+	 * @param string $current Current view.
+	 * @return array[] each: slug, label, icon
+	 */
+	public static function nav_items( $current ) {
+		$items = array(
+			array( 'slug' => 'dashboard', 'label' => __( 'Dashboard', 'woopanel' ), 'icon' => 'grid' ),
+			array( 'slug' => 'orders',    'label' => __( 'Orders', 'woopanel' ),    'icon' => 'bag' ),
+			array( 'slug' => 'downloads', 'label' => __( 'Downloads', 'woopanel' ), 'icon' => 'download' ),
+			array( 'slug' => 'address',   'label' => __( 'Addresses', 'woopanel' ), 'icon' => 'pin' ),
+			array( 'slug' => 'account',   'label' => __( 'Account', 'woopanel' ),   'icon' => 'user' ),
+		);
+
+		foreach ( $items as $i => $item ) {
+			$items[ $i ]['active'] = ( $item['slug'] === $current );
+			$items[ $i ]['url']    = woopanel_panel_url( array( 'woopanel_view' => $item['slug'] ) );
+		}
+		return $items;
+	}
+}
