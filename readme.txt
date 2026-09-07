@@ -1,73 +1,82 @@
-== WooPanel ==
+=== WooPanel (ووپنل) ===
 Contributors: majidygh
-Tags: woocommerce, dashboard, my account, customer panel, rtl
+Tags: woocommerce, dashboard, my account, customer panel, rtl, persian
 Requires at least: 6.0
-Tested up to: 6.8
+Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Modern user dashboard for WooCommerce — orders, downloads, addresses and account settings in one clean panel.
+پنل کاربری مدرن برای ووکامرس — سفارش‌ها، دانلودها، نشانی‌ها و حساب کاربری در یک پنل تمیز. تماماً فارسی و راست‌چین.
 
 == Description ==
 
-WooPanel replaces the dated WooCommerce "My Account" area with a clean, fast, modern customer dashboard.
+ووپنل ناحیه‌ی «حساب کاربری» ووکامرس را با یک پنل کاربری مدرن، سریع و تماماً فارسی جایگزین می‌کند.
 
-* Dashboard with order stats and recent orders
-* Order history with status badges, filters and pagination
-* Detailed order view with strict ownership checks
-* Downloads center with remaining counts and expiry dates
-* Inline billing & shipping address editing (WooCommerce-native fields)
-* Account settings + password change
-* Optional My Account takeover (endpoints keep working)
-* Dark mode: light / dark / system
-* RTL-ready with logical CSS properties
-* Zero build step — no React, no npm, works from the zip
-* HPOS compatible, translation ready
+امکانات:
 
-= Usage =
+* پیشخوان: تعداد سفارش، مجموع خرید، میانگین سفارش، دانلودهای موجود + سفارش‌های اخیر
+* سفارش‌ها: تاریخچه کامل، فیلتر وضعیت، صفحه‌بندی، جزئیات سفارش با اقلام و جمع فاکتور
+* دانلودها: فایل‌های قابل دانلود با تعداد باقی‌مانده و تاریخ انقضا
+* نشانی‌ها: ویرایش درجای صورت‌حساب و حمل‌ونقل با فیلدهای خود ووکامرس
+* حساب کاربری: ویرایش نام/ایمیل، تغییر رمز عبور با تأیید رمز فعلی
+* سه حالت تم: روشن / تیره / هماهنگ با سیستم
+* رنگ اصلی دلخواه از تنظیمات
+* فونت وزیرمتن باندل‌شده + ارقام فارسی در قیمت‌ها و تاریخ‌ها
+* جایگزینی اختیاری پیشخوان My Account ووکامرس (endpointها سالم می‌مانند)
+* سازگار با HPOS
+* ترجمه‌ی کامل فارسی همراه پلاگین
+* بدون هیچ وابستگی جاوااسکریپتی — PHP خالص و رندر سمت سرور
 
-Add `[woopanel]` to any page, or `[woopanel view="orders"]` to open a specific view.
+نحوه‌ی استفاده: شورت‌کد [woopanel] را در هر صفحه‌ای قرار دهید. برای بخش مشخص: [woopanel view="orders"]
+
+امنیت: همه‌ی فرم‌ها با nonce و POST سمت سرور، بررسی سختگیرانه‌ی مالکیت سفارش، بدون endpoint AJAX مهمان‌دست، بدون اطلاعات شخصی در URL.
 
 == Installation ==
 
-1. Upload the plugin folder to `/wp-content/plugins/`, or install the zip via Plugins → Add New.
-2. Activate the plugin.
-3. Add the `[woopanel]` shortcode to a page, or enable "Replace My Account dashboard" in Settings → WooPanel.
+1. فایل woopanel.zip را از صفحه‌ی Releases گیت‌هاب دانلود کنید
+2. پیشخوان وردپرس → افزونه‌ها → افزودن → بارگذاری افزونه
+3. افزونه را فعال کنید
+4. شورت‌کد [woopanel] را در یک صفحه قرار دهید (یا گزینه‌ی جایگزینی My Account را در تنظیمات ووپنل فعال کنید)
 
 == Frequently Asked Questions ==
 
-= Does it require WooCommerce? =
+= آیا تاریخ شمسی پشتیبانی می‌شود؟ =
+ووپنل از date_i18n وردپرس استفاده می‌کند؛ با پلاگین‌های تاریخ شمسی استاندارد (مثل wp-parsidate یا WP Jalali) تاریخ‌ها شمسی نمایش داده می‌شوند.
 
-Yes. WooPanel displays WooCommerce customer data and requires an active WooCommerce installation.
+= آیا با ارز تومان کار می‌کند؟ =
+بله؛ قیمت‌ها با wc_price ووکامرس رندر می‌شوند و ارز و فرمت آن را از تنظیمات ووکامرس می‌گیرند.
 
-= Does it change my WooCommerce endpoints? =
+= آیا به شورت‌کد نیاز است؟ =
+نه؛ در تنظیمات ووپنل می‌توانید گزینه‌ی جایگزینی پیشخوان صفحه‌ی «حساب کاربری» ووکامرس را فعال کنید.
 
-No. The optional takeover only replaces the dashboard area; all My Account endpoints (orders, downloads, addresses, account) keep working.
+== Screenshots ==
 
-= Is it RTL friendly? =
-
-Yes — the stylesheet is built with CSS logical properties and is RTL-first.
-
-= Where are the settings? =
-
-Settings → WooPanel: accent colors, panel title, welcome word, orders per page, My Account takeover.
+1. پیشخوان پنل — حالت روشن
+2. سفارش‌ها با فیلتر وضعیت
+3. جزئیات سفارش
+4. حالت تیره
+5. نمای موبایل
 
 == Changelog ==
 
 = 1.1.0 =
-* Persian design pass: bundled Vazirmatn font (OFL), purple gradient hero, glowing status badges with dot indicators, gradient sidebar wash and active-item glow.
-* Persian digits (۰-۹) across the whole panel — order numbers, dates, prices, quantities (entity-safe, HTML-aware).
-* Fixed: RTL sites loaded a 404 stylesheet — `woopanel-rtl.css` is now built and shipped (tools/build_rtl_css.py).
-* Fixed: invalid `font-family` fallback (`inherit` mid-list) dropped the panel font to the theme's.
-* Fixed: stat card values truncated on narrow layouts (stacked card layout under 700px container).
+* ریدیزن فارسی: فونت وزیرمتن باندل‌شده، بنر گرادیانی، بج‌های وضعیت درخشان
+* ارقام فارسی (۰-۹) در قیمت‌ها، تاریخ‌ها و شماره سفارش‌ها
+* فیکس: فایل استایل RTL در سایت‌های فارسی ۴۰۴ می‌داد
+* فیکس: fallback نامعتبر font-family و بریدگی قیمت در کارت‌ها
 
 = 1.0.1 =
-* Bundled complete Persian (fa_IR) translation — panel UI is fully localized on Persian sites.
-* Fixed: plugin never called `load_plugin_textdomain()`, so translations never loaded.
-* Fixed: `panel_title` / `welcome_text` options stored English defaults at activation and never re-translated; now empty options fall back to translated strings at render time.
-* Fixed: bidi scrambling when a Latin username appears inside Persian sentences (`<bdi>` isolation).
+* ترجمه‌ی کامل فارسی (fa_IR) همراه پلاگین
+* فیکس: load_plugin_textdomain فراخوانی نمی‌شد
+* فیکس: عنوان پنل و کلمه‌ی خوش‌آمد با تغییر زبان سایت ترجمه نمی‌شدند
+* فیکس: به‌هم‌ریختگی bidi با نام کاربری لاتین
 
 = 1.0.0 =
-* Initial release.
+* انتشار اولیه.
+
+== Upgrade Notice ==
+
+= 1.1.0 =
+ریدیزن کامل فارسی — فونت وزیرمتن، ارقام فارسی و فیکس استایل RTL. حتماً به‌روزرسانی کنید.
