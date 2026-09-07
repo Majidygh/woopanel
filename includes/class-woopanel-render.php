@@ -154,7 +154,7 @@ class WooPanel_Render {
 				<div class="wpl-brand__logo">W</div>
 				<div class="wpl-brand__text">
 					<strong><?php echo esc_html( $options['panel_title'] ); ?></strong>
-					<span class="wpl-brand__user"><?php echo esc_html( sprintf( /* translators: %s: user display name */ __( 'Welcome, %s', 'woopanel' ), $display ) ); ?></span>
+					<span class="wpl-brand__user"><?php echo wp_kses( sprintf( /* translators: %s: user display name */ __( 'Welcome, %s', 'woopanel' ), '<bdi>' . esc_html( $display ) . '</bdi>' ), array( 'bdi' => array() ) ); ?></span>
 				</div>
 			</div>
 			<nav class="wpl-nav">
@@ -254,7 +254,7 @@ class WooPanel_Render {
 		ob_start();
 		?>
 		<div class="wpl-hero">
-			<h3 class="wpl-hero__title"><?php echo esc_html( $welcome . '، ' . ( $user ? $user->display_name : '' ) ); ?> 👋</h3>
+			<h3 class="wpl-hero__title"><?php echo wp_kses( $welcome . '، <bdi>' . ( $user ? esc_html( $user->display_name ) : '' ) . '</bdi> 👋', array( 'bdi' => array() ) ); ?></h3>
 			<p class="wpl-hero__text"><?php esc_html_e( 'Here is a summary of your account.', 'woopanel' ); ?></p>
 		</div>
 		<div class="wpl-cards">

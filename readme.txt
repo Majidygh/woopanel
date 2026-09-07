@@ -4,7 +4,7 @@ Tags: woocommerce, dashboard, my account, customer panel, rtl
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,6 +55,12 @@ Yes — the stylesheet is built with CSS logical properties and is RTL-first.
 Settings → WooPanel: accent colors, panel title, welcome word, orders per page, My Account takeover.
 
 == Changelog ==
+
+= 1.0.1 =
+* Bundled complete Persian (fa_IR) translation — panel UI is fully localized on Persian sites.
+* Fixed: plugin never called `load_plugin_textdomain()`, so translations never loaded.
+* Fixed: `panel_title` / `welcome_text` options stored English defaults at activation and never re-translated; now empty options fall back to translated strings at render time.
+* Fixed: bidi scrambling when a Latin username appears inside Persian sentences (`<bdi>` isolation).
 
 = 1.0.0 =
 * Initial release.

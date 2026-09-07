@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 function woopanel_get_options() {
 	static $cache = null;
 	if ( null === $cache ) {
-		$cache = WooPanel_Options::get();
+		$cache = WooPanel_Options::get_resolved();
 	}
 	return $cache;
 }

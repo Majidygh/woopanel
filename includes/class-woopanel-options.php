@@ -20,14 +20,35 @@ class WooPanel_Options {
 	 * @return array
 	 */
 	public static function defaults() {
+		/**
+		 * Empty-string defaults for text options mean "use the translated
+		 * default at render time" — keeps panel_title/welcome_text translatable
+		 * even after the options row was first written under another locale.
+		 */
 		return array(
 			'accent'            => '#7c3aed',
 			'accent_bg'         => '#f5f3ff',
 			'replace_dashboard' => 0,
 			'orders_per_page'   => 8,
-			'panel_title'       => __( 'My Panel', 'woopanel' ),
-			'welcome_text'      => __( 'Hello', 'woopanel' ),
+			'panel_title'       => '',
+			'welcome_text'      => '',
 		);
+	}
+
+	/**
+	 * Resolved option getter: empty text options fall back to translations.
+	 *
+	 * @return array
+	 */
+	public static function get_resolved() {
+		$options = self::get();
+		if ( '' === trim( (string) $options['panel_title'] ) ) {
+			$options['panel_title'] = __( 'My Panel', 'woopanel' );
+		}
+		if ( '' === trim( (string) $options['welcome_text'] ) ) {
+			$options['welcome_text'] = __( 'Hello', 'woopanel' );
+		}
+		return $options;
 	}
 
 	/**

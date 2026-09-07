@@ -1,0 +1,240 @@
+# WooPanel Persian translation (fa_IR).
+msgid ""
+msgstr ""
+"Project-Id-Version: WooPanel 1.0.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fa_IR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "WooPanel"
+msgstr "ووپنل"
+
+msgid "WooCommerce is not active. WooPanel needs WooCommerce to display customer data."
+msgstr "ووکامرس فعال نیست. ووپنل برای نمایش داده‌های مشتری به ووکامرس نیاز دارد."
+
+msgid "Accent color"
+msgstr "رنگ اصلی"
+
+msgid "Used for buttons, links and active states."
+msgstr "برای دکمه‌ها، لینک‌ها و حالت‌های فعال به کار می‌رود."
+
+msgid "Accent background"
+msgstr "پس‌زمینه‌ی رنگ اصلی"
+
+msgid "Soft background tint for icon chips and hero."
+msgstr "رنگ ملایم پس‌زمینه برای آیکون‌ها و بنر خوش‌آمد."
+
+msgid "Panel title"
+msgstr "عنوان پنل"
+
+msgid "Welcome word"
+msgstr "کلمه‌ی خوش‌آمد"
+
+msgid "Shown before the user name on the dashboard, e.g. Hello."
+msgstr "قبل از نام کاربری در پیشخوان نمایش داده می‌شود؛ مثلاً «سلام»."
+
+msgid "Orders per page"
+msgstr "تعداد سفارش در هر صفحه"
+
+msgid "My Account integration"
+msgstr "یکپارچگی با «حساب کاربری»"
+
+msgid "Replace the default WooCommerce My Account dashboard area with WooPanel (endpoints keep working)."
+msgstr "بخش پیشخوان صفحه‌ی «حساب کاربری» ووکامرس با ووپنل جایگزین می‌شود (بخش‌های دیگر سر جای خود کار می‌کنند)."
+
+msgid "Usage"
+msgstr "نحوه‌ی استفاده"
+
+msgid "Add this shortcode to any page:"
+msgstr "این شورت‌کد را در هر صفحه‌ای قرار دهید:"
+
+msgid "Open a specific view:"
+msgstr "باز کردن یک بخش مشخص:"
+
+msgid "Dashboard"
+msgstr "پیشخوان"
+
+msgid "Orders"
+msgstr "سفارش‌ها"
+
+msgid "Downloads"
+msgstr "دانلودها"
+
+msgid "Addresses"
+msgstr "نشانی‌ها"
+
+msgid "Account"
+msgstr "حساب کاربری"
+
+msgid "My Panel"
+msgstr "پنل من"
+
+msgid "Hello"
+msgstr "سلام"
+
+msgid "WooPanel requires WooCommerce to be installed and active."
+msgstr "ووپنل برای کار به نصب و فعال بودن ووکامرس نیاز دارد."
+
+msgid "Light theme"
+msgstr "تم روشن"
+
+msgid "System theme"
+msgstr "تم سیستم"
+
+msgid "Dark theme"
+msgstr "تم تیره"
+
+msgid "Welcome, %s"
+msgstr "خوش آمدید، %s"
+
+msgid "Log out"
+msgstr "خروج"
+
+msgid "Login required"
+msgstr "ورود لازم است"
+
+msgid "Please log in to view your panel."
+msgstr "برای مشاهده‌ی پنل خود وارد شوید."
+
+msgid "Log in"
+msgstr "ورود"
+
+msgid "Total spent"
+msgstr "مجموع خرید"
+
+msgid "Average order"
+msgstr "میانگین سفارش"
+
+msgid "Available downloads"
+msgstr "دانلودهای موجود"
+
+msgid "Here is a summary of your account."
+msgstr "خلاصه‌ای از حساب کاربری شما."
+
+msgid "Recent orders"
+msgstr "سفارش‌های اخیر"
+
+msgid "View all"
+msgstr "مشاهده‌ی همه"
+
+msgid "All"
+msgstr "همه"
+
+msgid "No orders found."
+msgstr "سفارشی یافت نشد."
+
+msgid "Order"
+msgstr "سفارش"
+
+msgid "Date"
+msgstr "تاریخ"
+
+msgid "Status"
+msgstr "وضعیت"
+
+msgid "Total"
+msgstr "مجموع"
+
+msgid "Order not found."
+msgstr "سفارشی یافت نشد."
+
+msgid "Back to orders"
+msgstr "بازگشت به سفارش‌ها"
+
+msgid "Product"
+msgstr "محصول"
+
+msgid "Quantity"
+msgstr "تعداد"
+
+msgid "Subtotal"
+msgstr "جمع جزء"
+
+msgid "Shipping"
+msgstr "حمل و نقل"
+
+msgid "Tax"
+msgstr "مالیات"
+
+msgid "Discount"
+msgstr "تخفیف"
+
+msgid "Billing address"
+msgstr "نشانی صورت‌حساب"
+
+msgid "Shipping address"
+msgstr "نشانی حمل و نقل"
+
+msgid "No downloads available yet."
+msgstr "هنوز فایلی برای دانلود ندارید."
+
+msgid "Remaining: %s"
+msgstr "باقی‌مانده: %s"
+
+msgid "Expires: %s"
+msgstr "انقضا: %s"
+
+msgid "Download"
+msgstr "دانلود"
+
+msgid "Edit"
+msgstr "ویرایش"
+
+msgid "No address saved yet."
+msgstr "هنوز نشانی‌ای ذخیره نشده."
+
+msgid "Save address"
+msgstr "ذخیره‌ی نشانی"
+
+msgid "Account details"
+msgstr "جزئیات حساب کاربری"
+
+msgid "First name"
+msgstr "نام"
+
+msgid "Last name"
+msgstr "نام خانوادگی"
+
+msgid "Email"
+msgstr "ایمیل"
+
+msgid "Save details"
+msgstr "ذخیره‌ی اطلاعات"
+
+msgid "Change password"
+msgstr "تغییر رمز عبور"
+
+msgid "Current password"
+msgstr "رمز عبور فعلی"
+
+msgid "New password"
+msgstr "رمز عبور جدید"
+
+msgid "Repeat new password"
+msgstr "تکرار رمز عبور جدید"
+
+msgid "Your address has been saved."
+msgstr "نشانی شما ذخیره شد."
+
+msgid "Your account details have been saved."
+msgstr "اطلاعات حساب شما ذخیره شد."
+
+msgid "Your password has been changed."
+msgstr "رمز عبور شما تغییر کرد."
+
+msgid "Please enter a valid email address that is not already in use."
+msgstr "لطفاً یک ایمیل معتبر وارد کنید که قبلاً استفاده نشده باشد."
+
+msgid "New password and confirmation do not match."
+msgstr "رمز جدید و تکرار آن یکسان نیستند."
+
+msgid "New password must be at least 8 characters long."
+msgstr "رمز عبور جدید باید حداقل ۸ نویسه باشد."
+
+msgid "Your current password is not correct."
+msgstr "رمز عبور فعلی نادرست است."
+
+msgid "The address could not be saved. Please check the form and try again."
+msgstr "ذخیره‌ی نشانی ممکن نشد. لطفاً فرم را بررسی و دوباره تلاش کنید."

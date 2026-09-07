@@ -3,7 +3,7 @@
  * Plugin Name:       WooPanel
  * Plugin URI:        https://github.com/Majidygh/woopanel
  * Description:       Modern user dashboard for WooCommerce — orders, downloads, addresses and account settings in one clean panel. RTL-ready, dark mode, zero build step.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            majidygh
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'WOOPANEL_VERSION', '1.0.0' );
+define( 'WOOPANEL_VERSION', '1.0.1' );
 define( 'WOOPANEL_FILE', __FILE__ );
 define( 'WOOPANEL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WOOPANEL_URL', plugin_dir_url( __FILE__ ) );
@@ -45,6 +45,13 @@ register_activation_hook( __FILE__, array( 'WooPanel_Options', 'add_default_opti
 add_action( 'init', array( 'WooPanel_Shortcode', 'init' ) );
 add_action( 'admin_menu', array( 'WooPanel_Admin', 'register_menu' ) );
 add_action( 'admin_init', array( 'WooPanel_Admin', 'register_settings' ) );
+
+/**
+ * Load translations (bundled fa_IR ships with the plugin).
+ */
+add_action( 'init', function () {
+	load_plugin_textdomain( 'woopanel', false, dirname( plugin_basename( WOOPANEL_FILE ) ) . '/languages' );
+} );
 
 /**
  * Optional takeover of the default WooCommerce "My Account" dashboard content.

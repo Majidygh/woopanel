@@ -47,7 +47,7 @@ class WooPanel_Admin {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
-		$options = WooPanel_Options::get();
+		$options = WooPanel_Options::get_resolved();
 		$woo     = WooPanel_Data::is_woo();
 		?>
 		<div class="wrap">
