@@ -136,7 +136,9 @@ class WooPanel_Render {
 			</div>
 		</div>
 		<?php
-		return (string) ob_get_clean();
+		$html = (string) ob_get_clean();
+		// Persian/Arabic digit shaping for RTL locales (text nodes only).
+		return woopanel_localize_digits_html( $html );
 	}
 
 	/**
@@ -253,7 +255,7 @@ class WooPanel_Render {
 
 		ob_start();
 		?>
-		<div class="wpl-hero">
+		<div class="wpl-hero wpl-hero--glam">
 			<h3 class="wpl-hero__title"><?php echo wp_kses( $welcome . '، <bdi>' . ( $user ? esc_html( $user->display_name ) : '' ) . '</bdi> 👋', array( 'bdi' => array() ) ); ?></h3>
 			<p class="wpl-hero__text"><?php esc_html_e( 'Here is a summary of your account.', 'woopanel' ); ?></p>
 		</div>
@@ -375,7 +377,7 @@ class WooPanel_Render {
 				<tbody>
 					<?php foreach ( $orders as $row ) : ?>
 						<tr>
-							<td><a class="wpl-orderlink" href="<?php echo esc_url( woopanel_panel_url( array( 'woopanel_view' => 'order', 'woopanel_order' => (string) $row['id'] ) ) ); ?>">#<?php echo esc_html( $row['number'] ); ?></a></td>
+							<td><a class="wpl-orderlink" href="<?php echo esc_url( woopanel_panel_url( array( 'woopanel_view' => 'order', 'woopanel_order' => (string) $row['id'] ) ) ); ?>">#<?php echo esc_html( woopanel_localize_digits( $row['number'] ) ); ?></a></td>
 							<td><?php echo esc_html( $row['date'] ); ?></td>
 							<td><span class="wpl-badge <?php echo esc_attr( $row['status_class'] ); ?>"><?php echo esc_html( $row['status_label'] ); ?></span></td>
 							<td><?php echo wp_kses_post( $row['total'] ); ?></td>
@@ -412,7 +414,7 @@ class WooPanel_Render {
 
 		<div class="wpl-orderhead">
 			<div>
-				<h3 class="wpl-orderhead__num">#<?php echo esc_html( $order->get_order_number() ); ?></h3>
+				<h3 class="wpl-orderhead__num">#<?php echo esc_html( woopanel_localize_digits( $order->get_order_number() ) ); ?></h3>
 				<p class="wpl-orderhead__date"><?php echo esc_html( $order->get_date_created() ? $order->get_date_created()->date_i18n( get_option( 'date_format' ) ) : '' ); ?></p>
 			</div>
 			<span class="wpl-badge <?php echo esc_attr( woopanel_status_class( $status ) ); ?>"><?php echo esc_html( woopanel_status_label( $status ) ); ?></span>

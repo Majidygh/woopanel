@@ -4,7 +4,7 @@ Tags: woocommerce, dashboard, my account, customer panel, rtl
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,6 +55,13 @@ Yes — the stylesheet is built with CSS logical properties and is RTL-first.
 Settings → WooPanel: accent colors, panel title, welcome word, orders per page, My Account takeover.
 
 == Changelog ==
+
+= 1.1.0 =
+* Persian design pass: bundled Vazirmatn font (OFL), purple gradient hero, glowing status badges with dot indicators, gradient sidebar wash and active-item glow.
+* Persian digits (۰-۹) across the whole panel — order numbers, dates, prices, quantities (entity-safe, HTML-aware).
+* Fixed: RTL sites loaded a 404 stylesheet — `woopanel-rtl.css` is now built and shipped (tools/build_rtl_css.py).
+* Fixed: invalid `font-family` fallback (`inherit` mid-list) dropped the panel font to the theme's.
+* Fixed: stat card values truncated on narrow layouts (stacked card layout under 700px container).
 
 = 1.0.1 =
 * Bundled complete Persian (fa_IR) translation — panel UI is fully localized on Persian sites.

@@ -21,6 +21,48 @@ function woopanel_get_options() {
 }
 
 /**
+ * Convert Western digits to the current locale's digits (Persian: ۰-۹).
+ *
+ * @param string $text Text possibly containing 0-9.
+ * @return string
+ */
+function woopanel_localize_digits( $text ) {
+	if ( ! is_rtl() ) {
+		return $text;
+	}
+	$map = array( '0' => '۰', '1' => '۱', '2' => '۲', '3' => '۳', '4' => '۴', '5' => '۵', '6' => '۶', '7' => '۷', '8' => '۸', '9' => '۹' );
+	return strtr( (string) $text, $map );
+}
+
+/**
+ * Localize digits inside an HTML fragment (prices, dates).
+ * Safe: digits only ever occur in text nodes of our markup.
+ *
+ * @param string $html Fragment with esc/kses already applied.
+ * @return string
+ */
+function woopanel_localize_digits_html( $html ) {
+	if ( ! is_rtl() ) {
+		return $html;
+	}
+	// Convert standalone digit runs in text nodes; never touch HTML entities (&#036; etc.).
+	return preg_replace_callback(
+		'/(?<=>)([^<]+)(?=<)/',
+		function ( $m ) {
+			$converted = preg_replace_callback(
+				'/&#\d+;|\d+/u',
+				function ( $t ) {
+					return 0 === strpos( $t[0], '&#' ) ? $t[0] : woopanel_localize_digits( $t[0] );
+				},
+				$m[1]
+			);
+			return $converted;
+		},
+		(string) $html
+	);
+}
+
+/**
  * Human label for an order status.
  *
  * @param string $status Status slug, with or without the wc- prefix.

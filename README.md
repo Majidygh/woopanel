@@ -28,6 +28,7 @@ We tested the popular options (NextDash, Advanced Customer Account, premium acco
 - **Customizable accent color** via CSS variables — change it once in settings, the whole panel follows.
 - **HPOS compatible** (WooCommerce custom order tables).
 - **Translation ready** (`woopanel` text domain) — ships with a complete **Persian (fa_IR)** translation, RTL-first design.
+- **Persian polish**: bundled **Vazirmatn** font, Persian digits (۰-۹) in prices/dates/order numbers, gradient hero and glowing status badges.
 - **Mobile responsive** with a sidebar→tab navigation on small screens.
 
 ## Security model
