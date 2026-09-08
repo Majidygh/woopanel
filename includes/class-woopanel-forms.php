@@ -45,8 +45,7 @@ class WooPanel_Forms {
 		$form = isset( $_POST['woopanel_form'] ) ? sanitize_key( wp_unslash( $_POST['woopanel_form'] ) ) : '';
 
 		if ( ! isset( $_POST['woopanel_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['woopanel_nonce'] ) ), 'woopanel_' . $form ) ) {
-			wp_safe_redirect( woopanel_panel_url( array( 'woopanel_msg' => 'err_address' ) ) );
-			exit;
+			self::redirect( 'err_form', 'password' === $form ? 'account' : $form );
 		}
 
 		$user_id = get_current_user_id();
@@ -61,6 +60,8 @@ class WooPanel_Forms {
 			case 'password':
 				self::save_password( $user_id );
 				break;
+			default:
+				self::redirect( 'err_form' );
 		}
 		exit;
 	}
@@ -91,29 +92,27 @@ class WooPanel_Forms {
 		$view  = 'address';
 		$found = false;
 
+		$customer = new WC_Customer( $user_id );
+
 		// Whitelist keys from WooCommerce's own address field definitions.
 		foreach ( WooPanel_Data::address_fields( $type ) as $field ) {
 			$post_key = 'woopanel_' . $field['key'];
 			if ( ! isset( $_POST[ $post_key ] ) ) {
 				continue;
 			}
-			$found  = true;
-			$raw    = wp_unslash( $_POST[ $post_key ] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- sanitized per type below.
-			$value  = 'state' === $field['type'] ? sanitize_text_field( $raw ) : ( 'checkbox' === $field['type'] ? ( empty( $raw ) ? 0 : 1 ) : sanitize_text_field( $raw ) );
+			$found = true;
+			$raw   = wp_unslash( $_POST[ $post_key ] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- sanitized per type below.
+			$value = 'checkbox' === $field['type'] ? ( empty( $raw ) ? 0 : 1 ) : sanitize_text_field( $raw );
 
 			$setter = 'set_' . $type . '_' . str_replace( $type . '_', '', $field['key'] );
-			if ( function_exists( 'wc_get_customer' ) ) {
-				$customer = new WC_Customer( $user_id );
-				if ( method_exists( $customer, $setter ) ) {
-					$customer->{$setter}( $value );
-					continue;
-				}
+			if ( method_exists( $customer, $setter ) ) {
+				$customer->{$setter}( $value );
+			} else {
+				update_user_meta( $user_id, $field['key'], $value );
 			}
-			update_user_meta( $user_id, $field['key'], $value );
 		}
 
-		if ( $found && function_exists( 'wc_get_customer' ) ) {
-			$customer = new WC_Customer( $user_id );
+		if ( $found ) {
 			$customer->save();
 		}
 
@@ -147,14 +146,34 @@ class WooPanel_Forms {
 			self::redirect( 'err_email', 'account' );
 		}
 
-		update_user_meta( $user_id, 'first_name', $first );
-		update_user_meta( $user_id, 'last_name', $last );
-		wp_update_user(
+		$user = get_userdata( $user_id );
+		// Keep display_name in step with the name fields (same policy as Woo core).
+		$display = trim( $first . ' ' . $last );
+		if ( '' === $display ) {
+			$display = $user ? $user->user_login : '';
+		}
+
+		$updated = wp_update_user(
 			array(
-				'ID'         => $user_id,
-				'user_email' => $email,
+				'ID'           => $user_id,
+				'user_email'   => $email,
+				'first_name'   => $first,
+				'last_name'    => $last,
+				'display_name' => $display,
 			)
 		);
+		if ( is_wp_error( $updated ) ) {
+			self::redirect( 'err_email', 'account' );
+		}
+
+		// WooCommerce caches customer data; keep it in sync.
+		if ( class_exists( 'WC_Customer' ) ) {
+			$customer = new WC_Customer( $user_id );
+			$customer->set_billing_email( $email );
+			$customer->set_first_name( $first );
+			$customer->set_last_name( $last );
+			$customer->save();
+		}
 
 		/**
 		 * Fires after WooPanel account details are saved.
@@ -190,10 +209,8 @@ class WooPanel_Forms {
 
 		wp_set_password( $new1, $user_id );
 
-		// wp_set_password logs the user out — log them back into their own account.
+		// Refresh the in-memory user cache; the current session cookie stays valid.
 		wp_set_current_user( $user_id );
-		wp_set_auth_cookie( $user_id, true );
-		do_action( 'wp_login', $user->user_login, $user );
 
 		self::redirect( 'password_changed', 'account' );
 	}

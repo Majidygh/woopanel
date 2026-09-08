@@ -85,6 +85,9 @@ TR = {
     'Download': 'دانلود',
     # Addresses
     'Edit': 'ویرایش',
+    'Close': 'بستن',
+    'Select an option': 'انتخاب کنید',
+    'Your session expired or the form was invalid. Please try again.': 'نشست شما منقضی شده یا فرم نامعتبر است. لطفاً دوباره تلاش کنید.',
     'No address saved yet.': 'هنوز نشانی‌ای ذخیره نشده.',
     'Save address': 'ذخیره‌ی نشانی',
     'Your address has been saved.': 'نشانی شما ذخیره شد.',

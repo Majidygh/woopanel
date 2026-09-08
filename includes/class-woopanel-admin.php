@@ -47,7 +47,7 @@ class WooPanel_Admin {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
-		$options = WooPanel_Options::get_resolved();
+		$options = WooPanel_Options::get(); // Raw values: resolved() would bake translations into the DB on save.
 		$woo     = WooPanel_Data::is_woo();
 		?>
 		<div class="wrap">

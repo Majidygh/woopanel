@@ -102,6 +102,7 @@ function woopanel_notice_for( $code ) {
 		'err_password_short'   => array( 'error', __( 'New password must be at least 8 characters long.', 'woopanel' ) ),
 		'err_password_current' => array( 'error', __( 'Your current password is not correct.', 'woopanel' ) ),
 		'err_address'          => array( 'error', __( 'The address could not be saved. Please check the form and try again.', 'woopanel' ) ),
+		'err_form'             => array( 'error', __( 'Your session expired or the form was invalid. Please try again.', 'woopanel' ) ),
 	);
 	return isset( $notices[ $code ] ) ? $notices[ $code ] : array( 'info', '' );
 }

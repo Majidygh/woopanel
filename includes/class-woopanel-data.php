@@ -41,7 +41,6 @@ class WooPanel_Data {
 			'orders_count'  => 0,
 			'total_spent'   => 0.0,
 			'avg_order'     => 0.0,
-			'last_order_id' => 0,
 			'downloads'     => 0,
 		);
 
@@ -52,15 +51,14 @@ class WooPanel_Data {
 		$stats = array(
 			'orders_count'  => (int) wc_get_customer_order_count( $user_id ),
 			'total_spent'   => (float) wc_get_customer_total_spent( $user_id ),
-			'last_order_id' => (int) get_user_meta( $user_id, '_woopanel_last_order_id', true ),
 			'downloads'     => 0,
 		);
 
 		$stats['avg_order'] = $stats['orders_count'] > 0 ? $stats['total_spent'] / $stats['orders_count'] : 0.0;
 
-		if ( $stats['last_order_id'] && function_exists( 'wc_get_customer_available_downloads' ) ) {
-			$downloads        = wc_get_customer_available_downloads( $user_id );
-			$stats['downloads'] = count( $downloads );
+		if ( function_exists( 'wc_get_customer_available_downloads' ) ) {
+			$downloads          = wc_get_customer_available_downloads( $user_id );
+			$stats['downloads'] = is_array( $downloads ) ? count( $downloads ) : 0;
 		}
 
 		return $stats;
@@ -110,13 +108,15 @@ class WooPanel_Data {
 		$query = array_merge(
 			array(
 				'customer_id' => $user_id,
-				'limit'       => -1,
+				'limit'       => 1,
 				'type'        => 'shop_order',
 				'return'      => 'ids',
 			),
-			$args
+			$args,
+			array( 'paginate' => true )
 		);
-		return count( wc_get_orders( $query ) );
+		$result = wc_get_orders( $query );
+		return is_object( $result ) && isset( $result->total ) ? (int) $result->total : 0;
 	}
 
 	/**
@@ -159,8 +159,8 @@ class WooPanel_Data {
 				'name'          => $dl['product_name'],
 				'file'          => $dl['file']['name'],
 				'url'           => $dl['download_url'],
-				'remaining'     => $dl['downloads_remaining'],
-				'expires'       => $dl['access_expires'] ? $dl['access_expires']->date_i18n( get_option( 'date_format' ) ) : '',
+				'remaining'     => null === $dl['downloads_remaining'] ? '' : (string) $dl['downloads_remaining'],
+				'expires'       => '' === $dl['access_expires'] || null === $dl['access_expires'] ? '' : date_i18n( get_option( 'date_format' ), strtotime( (string) $dl['access_expires'] ) ),
 				'order_id'      => $dl['order_id'],
 			);
 		}
@@ -202,26 +202,21 @@ class WooPanel_Data {
 	 */
 	public static function get_address( $user_id, $type ) {
 		$values = array();
-		foreach ( self::address_fields( $type ) as $field ) {
+		$fields = self::address_fields( $type );
+
+		$customer = class_exists( 'WC_Customer' ) ? new WC_Customer( $user_id ) : null;
+		foreach ( $fields as $field ) {
+			$prop = str_replace( $type . '_', '', $field['key'] );
+			if ( $customer ) {
+				$get = 'get_' . $type . '_' . $prop;
+				if ( method_exists( $customer, $get ) ) {
+					$values[ $field['key'] ] = (string) $customer->{$get}();
+					continue;
+				}
+			}
 			$values[ $field['key'] ] = get_user_meta( $user_id, $field['key'], true );
 		}
 		return $values;
-	}
-
-	/**
-	 * Has the customer filled at least one billing field?
-	 *
-	 * @param int $user_id User ID.
-	 * @return bool
-	 */
-	public static function has_address( $user_id ) {
-		$address = self::get_address( $user_id, 'billing' );
-		foreach ( array( 'billing_address_1', 'billing_city', 'billing_phone', 'billing_email' ) as $k ) {
-			if ( ! empty( $address[ $k ] ) ) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**

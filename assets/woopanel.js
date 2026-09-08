@@ -21,19 +21,26 @@
 		for (var i = 0; i < btns.length; i++) {
 			var active = btns[i].getAttribute('data-wpl-theme-set') === theme;
 			btns[i].classList.toggle('is-active', active);
+			btns[i].setAttribute('aria-pressed', active ? 'true' : 'false');
+		}
+	}
+
+	function savedTheme() {
+		try {
+			return localStorage.getItem(STORAGE_KEY) || 'system';
+		} catch (e) {
+			return 'system';
 		}
 	}
 
 	function initTheme() {
-		var saved = 'system';
-		try {
-			saved = localStorage.getItem(STORAGE_KEY) || 'system';
-		} catch (e) {
-			saved = 'system';
+		var theme = savedTheme();
+		if (theme === 'system') {
+			return; // default markup already means "system"
 		}
 		var all = panels();
 		for (var i = 0; i < all.length; i++) {
-			applyTheme(all[i], saved);
+			applyTheme(all[i], theme);
 		}
 	}
 
@@ -69,7 +76,10 @@
 			}
 			var show = target.hidden;
 			target.hidden = !show;
-			btn.textContent = show ? btn.getAttribute('data-wpl-label-close') || 'Close' : btn.getAttribute('data-wpl-label-open') || 'Edit';
+			btn.setAttribute('aria-expanded', show ? 'true' : 'false');
+			btn.textContent = show
+				? btn.getAttribute('data-wpl-label-close') || 'Close'
+				: btn.getAttribute('data-wpl-label-open') || 'Edit';
 		});
 	}
 

@@ -19,9 +19,13 @@ class WooPanel_Render {
 	 * @param string $default Fallback.
 	 * @return string
 	 */
-	public static function sanitize_hex_color( $color, $default = '#7c3aed' ) {
+	public static function sanitize_hex_color( $color, $default = '#9a3412' ) {
 		$color = is_string( $color ) ? trim( $color ) : '';
-		if ( preg_match( '/^#([A-Fa-f0-9]{3}){1,2}$/', $color ) ) {
+		if ( preg_match( '/^#([A-Fa-f0-9]{3})$/', $color ) ) {
+			// Expand shorthand (#abc -> #aabbcc) so fixed-offset RGB parsing stays valid.
+			return '#' . $color[1] . $color[1] . $color[2] . $color[2] . $color[3] . $color[3];
+		}
+		if ( preg_match( '/^#[A-Fa-f0-9]{6}$/', $color ) ) {
 			return $color;
 		}
 		return $default;
@@ -38,11 +42,11 @@ class WooPanel_Render {
 		wp_style_add_data( 'woopanel', 'rtl', 'replace' );
 
 		$options = woopanel_get_options();
-		$accent  = self::sanitize_hex_color( $options['accent'], '#7c3aed' );
-		$bg      = self::sanitize_hex_color( $options['accent_bg'], '#f5f3ff' );
+		$accent  = self::sanitize_hex_color( $options['accent'], '#9a3412' );
+		$bg      = self::sanitize_hex_color( $options['accent_bg'], '#fbf1ea' );
 
 		$css = sprintf(
-			':root{--wpl-accent:%1$s;--wpl-accent-soft:%2$s;--wpl-accent-rgb:%3$d %4$d %5$d;}',
+			'.wpl-panel{--wpl-accent:%1$s;--wpl-accent-soft:%2$s;--wpl-accent-rgb:%3$d %4$d %5$d;}',
 			$accent,
 			$bg,
 			hexdec( substr( $accent, 1, 2 ) ),
@@ -52,6 +56,11 @@ class WooPanel_Render {
 		wp_add_inline_style( 'woopanel', $css );
 
 		wp_enqueue_script( 'woopanel', WOOPANEL_URL . 'assets/woopanel.js', array(), WOOPANEL_VERSION, true );
+
+		// Reuse WooCommerce's own country→state dropdown logic on the address forms.
+		if ( wp_script_is( 'wc-country-select', 'registered' ) ) {
+			wp_enqueue_script( 'wc-country-select' );
+		}
 	}
 
 	/**
@@ -153,7 +162,7 @@ class WooPanel_Render {
 		?>
 		<aside class="wpl-sidebar">
 			<div class="wpl-brand">
-				<div class="wpl-brand__logo">W</div>
+				<div class="wpl-brand__logo" aria-hidden="true"><?php echo esc_html( mb_substr( trim( (string) $options['panel_title'] ), 0, 1, 'UTF-8' ) ?: 'W' ); ?></div>
 				<div class="wpl-brand__text">
 					<strong><?php echo esc_html( $options['panel_title'] ); ?></strong>
 					<span class="wpl-brand__user"><?php echo wp_kses( sprintf( /* translators: %s: user display name */ __( 'Welcome, %s', 'woopanel' ), '<bdi>' . esc_html( $display ) . '</bdi>' ), array( 'bdi' => array() ) ); ?></span>
@@ -174,7 +183,7 @@ class WooPanel_Render {
 					<span class="wpl-sidebar__avatar"><?php echo esc_html( mb_substr( $display, 0, 1, 'UTF-8' ) ); ?></span>
 					<span class="wpl-sidebar__uname"><?php echo esc_html( $display ); ?></span>
 				<?php endif; ?>
-				<a class="wpl-nav__item wpl-nav__item--out" href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>">
+				<a class="wpl-nav__item wpl-nav__item--out" href="<?php echo esc_url( function_exists( 'wc_logout_url' ) ? wc_logout_url( woopanel_panel_url() ) : wp_logout_url( woopanel_panel_url() ) ); ?>">
 					<svg class="wpl-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg>
 					<span><?php esc_html_e( 'Log out', 'woopanel' ); ?></span>
 				</a>
@@ -214,7 +223,7 @@ class WooPanel_Render {
 	 * @return string
 	 */
 	private static function login_prompt( $atts ) {
-		$redirect = ! empty( $atts['redirect'] ) ? $atts['redirect'] : woopanel_panel_url();
+		$redirect = ! empty( $atts['redirect'] ) ? esc_url_raw( $atts['redirect'] ) : woopanel_panel_url();
 		$account  = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : wp_login_url( $redirect );
 
 		ob_start();
@@ -255,8 +264,8 @@ class WooPanel_Render {
 
 		ob_start();
 		?>
-		<div class="wpl-hero wpl-hero--glam">
-			<h3 class="wpl-hero__title"><?php echo wp_kses( $welcome . '، <bdi>' . ( $user ? esc_html( $user->display_name ) : '' ) . '</bdi> 👋', array( 'bdi' => array() ) ); ?></h3>
+		<div class="wpl-hero">
+			<h3 class="wpl-hero__title"><?php echo wp_kses( esc_html( $welcome ) . '، <bdi>' . ( $user ? esc_html( $user->display_name ) : '' ) . '</bdi>', array( 'bdi' => array() ) ); ?></h3>
 			<p class="wpl-hero__text"><?php esc_html_e( 'Here is a summary of your account.', 'woopanel' ); ?></p>
 		</div>
 		<div class="wpl-cards">
@@ -296,8 +305,8 @@ class WooPanel_Render {
 		$paged    = isset( $_GET['woopanel_paged'] ) ? max( 1, absint( $_GET['woopanel_paged'] ) ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only pager.
 
 		$query_args = array();
-		if ( $status && in_array( $status, array_keys( wc_get_order_statuses() ), true ) ) {
-			$query_args['status'] = $status;
+		if ( $status && array_key_exists( 'wc-' . $status, wc_get_order_statuses() ) ) {
+			$query_args['status'] = $status; // WC_Order_Query normalizes bare/prefixed slugs.
 		}
 
 		$total  = WooPanel_Data::count_orders( $user_id, $query_args );
@@ -319,7 +328,7 @@ class WooPanel_Render {
 		?>
 		<div class="wpl-filters">
 			<?php foreach ( $filters as $slug => $label ) : ?>
-				<?php $furl = woopanel_panel_url( array( 'woopanel_view' => 'orders', 'woopanel_status' => $slug, 'woopanel_paged' => '' ) ); ?>
+				<?php $furl = woopanel_panel_url( array( 'woopanel_view' => 'orders', 'woopanel_status' => '' === $slug ? false : $slug, 'woopanel_paged' => false ) ); ?>
 				<a class="wpl-chip<?php echo ( $status === $slug ) ? ' wpl-chip--active' : ''; // phpcs:ignore WordPress.Security.EscapeOutput ?>" href="<?php echo esc_url( $furl ); ?>"><?php echo esc_html( $label ); ?></a>
 			<?php endforeach; ?>
 		</div>
@@ -410,7 +419,7 @@ class WooPanel_Render {
 		$status = $order->get_status();
 		ob_start();
 		?>
-		<a class="wpl-back" href="<?php echo esc_url( woopanel_panel_url( array( 'woopanel_view' => 'orders', 'woopanel_status' => '', 'woopanel_paged' => '' ) ) ); ?>"><?php echo woopanel_icon( 'chevron', 14 ); // phpcs:ignore WordPress.Security.EscapeOutput ?> <?php esc_html_e( 'Back to orders', 'woopanel' ); ?></a>
+		<a class="wpl-back" href="<?php echo esc_url( woopanel_panel_url( array( 'woopanel_view' => 'orders', 'woopanel_status' => false, 'woopanel_paged' => false ) ) ); ?>"><?php echo woopanel_icon( 'chevron', 14 ); // phpcs:ignore WordPress.Security.EscapeOutput ?> <?php esc_html_e( 'Back to orders', 'woopanel' ); ?></a>
 
 		<div class="wpl-orderhead">
 			<div>
@@ -443,7 +452,7 @@ class WooPanel_Render {
 				$totals = array(
 					array( __( 'Subtotal', 'woopanel' ), $order->get_subtotal_to_display() ),
 					array( __( 'Shipping', 'woopanel' ), $order->get_shipping_total() > 0 || $order->get_shipping_tax() > 0 ? wc_price( $order->get_shipping_total() + $order->get_shipping_tax(), array( 'currency' => $order->get_currency() ) ) : '' ),
-					array( __( 'Tax', 'woopanel' ), wc_price( $order->get_total_tax(), array( 'currency' => $order->get_currency() ) ) ),
+					array( __( 'Tax', 'woopanel' ), (float) $order->get_total_tax() > 0 ? wc_price( $order->get_total_tax(), array( 'currency' => $order->get_currency() ) ) : '' ),
 				);
 				$discount = $order->get_total_discount();
 				if ( $discount > 0 ) {
@@ -543,11 +552,15 @@ class WooPanel_Render {
 			$fields = WooPanel_Data::address_fields( $type );
 			$values = WooPanel_Data::get_address( $user_id, $type );
 			$label  = 'billing' === $type ? __( 'Billing address', 'woopanel' ) : __( 'Shipping address', 'woopanel' );
+			$base   = 'woopanel_' . $type;
 			?>
 			<div class="wpl-address" data-wpl-address>
 				<div class="wpl-address__head">
 					<h4><?php echo esc_html( $label ); ?></h4>
-					<button type="button" class="wpl-btn wpl-btn--ghost wpl-btn--sm" data-wpl-toggle="wpl-address__form--<?php echo esc_attr( $type ); ?>"><?php esc_html_e( 'Edit', 'woopanel' ); ?></button>
+					<button type="button" class="wpl-btn wpl-btn--ghost wpl-btn--sm" aria-expanded="false"
+						data-wpl-toggle="<?php echo esc_attr( $base . '_form' ); ?>"
+						data-wpl-label-open="<?php esc_attr_e( 'Edit', 'woopanel' ); ?>"
+						data-wpl-label-close="<?php esc_attr_e( 'Close', 'woopanel' ); ?>"><?php esc_html_e( 'Edit', 'woopanel' ); ?></button>
 				</div>
 				<div class="wpl-address__view">
 					<?php
@@ -564,40 +577,56 @@ class WooPanel_Render {
 					}
 					?>
 				</div>
-				<form class="wpl-address__form wpl-address__form--<?php echo esc_attr( $type ); ?>" method="post" hidden>
-					<?php wp_nonce_field( 'woopanel_address', 'woopanel_nonce' ); ?>
+				<form class="wpl-address__form" id="<?php echo esc_attr( $base . '_form' ); ?>" method="post" hidden>
+					<input type="hidden" name="woopanel_nonce" value="<?php echo esc_attr( wp_create_nonce( 'woopanel_address' ) ); ?>">
 					<input type="hidden" name="woopanel_form" value="address">
 					<input type="hidden" name="address_type" value="<?php echo esc_attr( $type ); ?>">
-					<div class="wpl-grid2">
+					<div class="wpl-grid2 <?php echo esc_attr( 'billing' === $type ? 'woocommerce-billing-fields' : 'woocommerce-shipping-fields' ); ?>">
 						<?php foreach ( $fields as $field ) : ?>
 							<?php
-							if ( 'state' === $field['type'] ) {
-								// Country-dependent state dropdowns: use Woo's own walker.
-								$country_key = $type . '_country';
-								$country     = ! empty( $values[ $country_key ] ) ? $values[ $country_key ] : ( function_exists( 'wc_get_base_location' ) ? wc_get_base_location()['country'] : '' );
-								$args        = array(
-									'id'       => 'woopanel_' . $field['key'],
-									'name'     => 'woopanel_' . $field['key'],
-									'value'    => isset( $values[ $field['key'] ] ) ? $values[ $field['key'] ] : '',
-								);
-								$states = $country && function_exists( 'WC' ) && wc()->countries ? wc()->countries->get_states( $country ) : array();
-								if ( $states ) {
-									echo '<div class="wpl-field"><label>' . esc_html( $field['label'] ) . '</label><select ' . esc_attr( 'name="' . $args['name'] . '"' ) . '>';
-									foreach ( $states as $code => $state_name ) {
-										printf( '<option value="%s" %s>%s</option>', esc_attr( $code ), selected( $args['value'], $code, false ), esc_html( $state_name ) );
-									}
-									echo '</select></div>';
-								} else {
-									echo '<div class="wpl-field"><label>' . esc_html( $field['label'] ) . '</label><input type="text" ' . esc_attr( 'name="' . $args['name'] . '"' ) . ' value="' . esc_attr( $args['value'] ) . '"></div>';
+							$fkey   = $field['key'];
+							$fid    = $base . '_' . $fkey;
+							$fname  = 'woopanel_' . $fkey;
+							$fval   = isset( $values[ $fkey ] ) ? $values[ $fkey ] : '';
+							$req    = ! empty( $field['required'] );
+							if ( 'country' === $field['type'] ) {
+								// Native Woo ids/classes: wc-country-select.js keeps the state box in sync.
+								echo '<div class="wpl-field"><label for="' . esc_attr( $fkey ) . '">' . esc_html( $field['label'] ) . ( $req ? ' *' : '' ) . '</label>';
+								echo '<select id="' . esc_attr( $fkey ) . '" name="' . esc_attr( $fname ) . '" class="country_to_state" rel="' . esc_attr( $type . '_state' ) . '">';
+								foreach ( wc()->countries ? wc()->countries->get_allowed_countries() : array() as $code => $name ) {
+									printf( '<option value="%s"%s>%s</option>', esc_attr( $code ), selected( $fval, $code, false ), esc_html( $name ) );
 								}
+								echo '</select></div>';
 								continue;
 							}
+							if ( 'state' === $field['type'] ) {
+								$country_key = $type . '_country';
+								$country     = ! empty( $values[ $country_key ] ) ? $values[ $country_key ] : '';
+								$states      = $country && wc()->countries ? wc()->countries->get_states( $country ) : array();
+								// Woo's script targets #billing_state / #shipping_state inside a .form-row wrapper.
+								echo '<div class="wpl-field form-row"><label for="' . esc_attr( $fkey ) . '">' . esc_html( $field['label'] ) . ( $req ? ' *' : '' ) . '</label>';
+								if ( $states ) {
+									echo '<select id="' . esc_attr( $fkey ) . '" name="' . esc_attr( $fname ) . '" class="state_select">';
+									echo '<option value="">' . esc_html__( 'Select an option', 'woopanel' ) . '</option>';
+									foreach ( $states as $code => $state_name ) {
+										printf( '<option value="%s"%s>%s</option>', esc_attr( $code ), selected( $fval, $code, false ), esc_html( $state_name ) );
+									}
+									echo '</select>';
+								} else {
+									echo '<input type="text" id="' . esc_attr( $fkey ) . '" name="' . esc_attr( $fname ) . '" class="input-text" value="' . esc_attr( $fval ) . '">';
+								}
+								echo '</div>';
+								continue;
+							}
+							$ftype = in_array( $field['type'], array( 'email', 'tel' ), true ) ? $field['type'] : 'text';
 							?>
 							<div class="wpl-field">
-								<label><?php echo esc_html( $field['label'] ); ?><?php echo $field['required'] ? ' *' : ''; // phpcs:ignore WordPress.Security.EscapeOutput ?></label>
-								<input type="<?php echo esc_attr( 'email' === $field['type'] ? 'email' : ( 'tel' === $field['type'] ? 'tel' : 'text' ) ); ?>"
-									name="woopanel_<?php echo esc_attr( $field['key'] ); ?>"
-									value="<?php echo esc_attr( isset( $values[ $field['key'] ] ) ? $values[ $field['key'] ] : '' ); ?>">
+								<label for="<?php echo esc_attr( $fid ); ?>"><?php echo esc_html( $field['label'] ); ?><?php echo $req ? ' *' : ''; // phpcs:ignore WordPress.Security.EscapeOutput ?></label>
+								<input type="<?php echo esc_attr( $ftype ); ?>"
+									id="<?php echo esc_attr( $fid ); ?>"
+									name="<?php echo esc_attr( $fname ); ?>"
+									value="<?php echo esc_attr( $fval ); ?>"
+									<?php echo $req ? 'required' : ''; // phpcs:ignore WordPress.Security.EscapeOutput ?>>
 							</div>
 						<?php endforeach; ?>
 					</div>
@@ -622,7 +651,7 @@ class WooPanel_Render {
 		?>
 		<div class="wpl-account">
 			<form class="wpl-accountcard" method="post">
-				<?php wp_nonce_field( 'woopanel_account', 'woopanel_nonce' ); ?>
+				<input type="hidden" name="woopanel_nonce" value="<?php echo esc_attr( wp_create_nonce( 'woopanel_account' ) ); ?>">
 				<input type="hidden" name="woopanel_form" value="account">
 				<h4 class="wpl-accountcard__title"><?php esc_html_e( 'Account details', 'woopanel' ); ?></h4>
 				<div class="wpl-grid2">
@@ -643,7 +672,7 @@ class WooPanel_Render {
 			</form>
 
 			<form class="wpl-accountcard" method="post">
-				<?php wp_nonce_field( 'woopanel_password', 'woopanel_nonce' ); ?>
+				<input type="hidden" name="woopanel_nonce" value="<?php echo esc_attr( wp_create_nonce( 'woopanel_password' ) ); ?>">
 				<input type="hidden" name="woopanel_form" value="password">
 				<h4 class="wpl-accountcard__title"><?php esc_html_e( 'Change password', 'woopanel' ); ?></h4>
 				<div class="wpl-grid2">

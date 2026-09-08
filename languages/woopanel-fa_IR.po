@@ -182,8 +182,14 @@ msgstr "دانلود"
 msgid "Edit"
 msgstr "ویرایش"
 
+msgid "Close"
+msgstr "بستن"
+
 msgid "No address saved yet."
 msgstr "هنوز نشانی‌ای ذخیره نشده."
+
+msgid "Select an option"
+msgstr "انتخاب کنید"
 
 msgid "Save address"
 msgstr "ذخیره‌ی نشانی"
@@ -238,3 +244,6 @@ msgstr "رمز عبور فعلی نادرست است."
 
 msgid "The address could not be saved. Please check the form and try again."
 msgstr "ذخیره‌ی نشانی ممکن نشد. لطفاً فرم را بررسی و دوباره تلاش کنید."
+
+msgid "Your session expired or the form was invalid. Please try again."
+msgstr "نشست شما منقضی شده یا فرم نامعتبر است. لطفاً دوباره تلاش کنید."

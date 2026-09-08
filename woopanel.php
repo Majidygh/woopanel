@@ -3,7 +3,7 @@
  * Plugin Name:       WooPanel
  * Plugin URI:        https://github.com/Majidygh/woopanel
  * Description:       Modern user dashboard for WooCommerce — orders, downloads, addresses and account settings in one clean panel. RTL-ready, dark mode, zero build step.
- * Version:           1.1.0
+ * Version:           1.2.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            majidygh
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'WOOPANEL_VERSION', '1.1.0' );
+define( 'WOOPANEL_VERSION', '1.2.0' );
 define( 'WOOPANEL_FILE', __FILE__ );
 define( 'WOOPANEL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WOOPANEL_URL', plugin_dir_url( __FILE__ ) );
@@ -42,6 +42,10 @@ require_once WOOPANEL_DIR . 'includes/class-woopanel-admin.php';
 
 register_activation_hook( __FILE__, array( 'WooPanel_Options', 'add_default_options' ) );
 
+// Version-gated housekeeping for existing installs (runs once per upgrade;
+// activation hook alone never fires on `wp plugin update`).
+add_action( 'plugins_loaded', array( 'WooPanel_Options', 'maybe_upgrade' ), 5 );
+
 add_action( 'init', array( 'WooPanel_Shortcode', 'init' ) );
 add_action( 'admin_menu', array( 'WooPanel_Admin', 'register_menu' ) );
 add_action( 'admin_init', array( 'WooPanel_Admin', 'register_settings' ) );
@@ -62,5 +66,10 @@ add_action( 'plugins_loaded', function () {
 	if ( empty( $options['replace_dashboard'] ) || ! WooPanel_Data::is_woo() ) {
 		return;
 	}
-	add_action( 'woocommerce_account_dashboard', array( 'WooPanel_Shortcode', 'render_account_takeover' ), 5 );
+	// Core's dashboard template prints a hardcoded greeting before the
+	// woocommerce_account_dashboard hook, so replacing the hook only appends.
+	// Swap the whole account-content callback instead: endpoints keep working,
+	// only the dashboard area becomes WooPanel.
+	remove_action( 'woocommerce_account_content', 'woocommerce_account_content', 10 );
+	add_action( 'woocommerce_account_content', array( 'WooPanel_Shortcode', 'account_content' ), 10 );
 } );
