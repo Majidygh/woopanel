@@ -1,98 +1,161 @@
 <div dir="rtl">
 
-# ووپنل — پنل کاربری مدرن برای ووکامرس
-
-**ووپنل** ناحیه‌ی «حساب کاربری» ووکامرس را با یک پنل مدرن، سریع و تماماً فارسی جایگزین می‌کند — سفارش‌ها، دانلودها، نشانی‌ها و اطلاعات حساب در یک پنل تمیز.
-
 <p align="center">
-  <img src="docs/screenshots/dashboard.png" width="720" alt="پیشخوان ووپنل">
+  <img src="docs/screenshots/dark.png" width="100%" alt="WooPanel Dashboard - پیشخوان ووپنل">
 </p>
 
-## چرا ووپنل؟
+# ووپنل (WooPanel) — پنل کاربری مدرن و اختصاصی برای ووکامرس
 
-پلاگین‌های پنل کاربری موجود یا سنگین‌اند (React، build step، ده‌ها فایل)، یا نسخه‌ی رایگان‌شان قفل است، یا RTL را جدی نگرفته‌اند. ووپنل با این اصول ساخته شده:
-
-- **بدون build step** — PHP خالص و رندر سمت سرور؛ هیچ dependency جاوااسکریپتی
-- **فارسی اول** — فونت وزیرمتن باندل‌شده، ارقام فارسی (۰-۹) در قیمت‌ها و تاریخ‌ها، چیدمان کامل RTL
-- **سبک و امن** — ۱۲ فایل، بدون endpoint عمومی AJAX
-
-## امکانات
-
-| بخش | توضیح |
-|---|---|
-| پیشخوان | تعداد سفارش، مجموع خرید، میانگین سفارش، دانلودهای موجود + سفارش‌های اخیر |
-| سفارش‌ها | تاریخچه کامل با فیلتر وضعیت، صفحه‌بندی و جزئیات سفارش با اقلام و جمع فاکتور |
-| دانلودها | فایل‌های قابل دانلود با تعداد باقی‌مانده و تاریخ انقضا |
-| نشانی‌ها | ویرایش درجای صورت‌حساب و حمل‌ونقل با فیلدهای خود ووکامرس |
-| حساب کاربری | ویرایش نام/ایمیل، تغییر رمز عبور (با تأیید رمز فعلی) |
-
-<p align="center">
-  <img src="docs/screenshots/orders.png" width="720" alt="سفارش‌ها">
+<p align="right">
+  <a href="https://github.com/Majidygh/woopanel/releases"><img src="https://img.shields.io/badge/version-1.7.0-blue.svg?style=flat-square" alt="Version 1.7.0"></a>
+  <a href="https://woocommerce.com/"><img src="https://img.shields.io/badge/WooCommerce-7.0%2B-96588a.svg?style=flat-square" alt="WooCommerce 7.0+"></a>
+  <a href="https://wordpress.org/"><img src="https://img.shields.io/badge/WordPress-6.0%2B-21759b.svg?style=flat-square" alt="WordPress 6.0+"></a>
+  <a href="https://php.net/"><img src="https://img.shields.io/badge/PHP-7.4%2B-777bb4.svg?style=flat-square" alt="PHP 7.4+"></a>
+  <img src="https://img.shields.io/badge/Design-Bespoke%20Obsidian%20UI-090d16.svg?style=flat-square" alt="Bespoke UI">
+  <img src="https://img.shields.io/badge/RTL-Native%20Persian-emerald.svg?style=flat-square" alt="RTL Native">
 </p>
 
-- **سه حالت تم**: روشن / تیره / هماهنگ با سیستم — با یک کلیک، ذخیره در مرورگر
-- **رنگ اصلی دلخواه**: از تنظیمات عوضش کنید؛ کل پنل (دکمه‌ها، لینک‌ها، آیکون‌ها) دنبالش می‌رود
-- **جایگزینی اختیاری My Account**: پیشخوان پیش‌فرض ووکامرس جایگزین می‌شود و endpointهای دیگر دست‌نخورده کار می‌کنند
-- **سازگار با HPOS** (جدول سفارش سفارشی ووکامرس)
-- **ریسپانسیو**: در موبایل سایدبار به نوار تب افقی تبدیل می‌شود
-- **ترجمه‌پذیر** (دامنه‌ی `woopanel`) — ترجمه‌ی کامل فارسی همراه پلاگین است
+**ووپنل** یک پنل کاربری فوق‌العاده مدرن، سبک و با دیزاین اختصاصی برای فروشگاه‌های ووکامرسی است که ناحیهٔ سنتی «حساب کاربری من» (My Account) را به یک پورتال حرفه‌ای، شیک و منظم تبدیل می‌کند.
+
+طراحی نسخهٔ ۱.۷ با فاصله گرفتن از المان‌های تکراری، گرادیان‌های اغراق‌شده و افکت‌های سنگین هوش مصنوعی، بر پایهٔ یک **دیزاین سیستم اختصاصی صنعتی و مینیمال (Bespoke Slate & Obsidian)** بازنویسی شده است.
+
+---
+
+## ویژگی‌های کلیدی نسخه ۱.۷
+
+* 💎 **دیزاین اختصاصی و مهندسی‌شده (Bespoke UI)**: طراحی تمیز با سطوح عمیق ابسیدین (`#090d16`) در دارک‌مود، سایه‌های نرم لایه‌ای در لایت‌مود و تایپوگرافی چشم‌نواز با فونت وزیرمتن.
+* 🚚 **نوار هوشمند رهگیری مرسوله پستی**: نمایش مستقیم بسته در حال ارسال در بالای پیشخوان با کد رهگیری پست (`post_barcode`)، حفظ ارقام لاتین برای جلوگیری از مخدوش شدن بارکد، و انتقال با یک کلیک به سامانه رهگیری رسمی پست (`tracking.post.ir`).
+* 🖼️ **پیش‌نمایش بصری اقلام سفارش (Order Thumbnails)**: نمایش تصاویر بندانگشتی کالاهای خریداری‌شده در ردیف‌های سفارش به همراه شمارشگر اقلام.
+* 🖨️ **چاپ سریع فاکتور (Print Invoice)**: دکمه چاپ سفارش در نمای فاکتور به همراه استایل‌های بهینه‌سازی‌شده برای پرینت (`@media print`) و خروجی PDF تمیز بدون منوها.
+* 🌓 **سوئیچر سه‌حالته تم**: پشتیبانی از حالت‌های **روشن (Light)**، **تیره (Dark)** و **خودکار (Auto)** متصل به ترجیحات سیستم‌عامل کاربر.
+* ⚡ **بهینه‌سازی حداکثری عملکرد**: حذف کامل لیسنرهای سنگین موس و انیمیشن‌های پردازنده‌بر؛ اجرای روان ۶۰ فریم بر ثانیه با صفر کیلوبایت وابستگی به فریم‌ورک‌های سنگین جاوااسکریپت.
+* 🇮🇷 **بومی‌سازی کامل و راست‌چین استاندارد**: ترجمه ۱۰۰٪ فارسی همراه با فایل‌های کامپایل‌شده `.mo/.po` و استایل‌های بهینه‌سازی‌شده `woopanel-rtl.css`.
+* 🛡️ **امنیت سخت‌گیرانه**: تمام فرم‌ها با اعتبارسنجی Nonce، الگوی امن PRG، جلوگیری از نشت اطلاعات در URL و بررسی سختگیرانهٔ دسترسی کاربر به سفارش‌ها.
+
+---
+
+## تصاویر محیط کاربری
+
+### ۱. پیشخوان در حالت روشن (Light Mode)
+طراحی شیک، کارت‌های آماری خلوت، نوار رهگیری مرسوله فعال و جدول سفارش‌های اخیر با ریزعکس کالاها:
 
 <p align="center">
-  <img src="docs/screenshots/dark.png" width="720" alt="حالت تیره">
+  <img src="docs/screenshots/dashboard.png" width="100%" alt="پیشخوان ووپنل در حالت روشن">
 </p>
 
-## نصب
+### ۲. پیشخوان در حالت تیره (Obsidian Dark Mode)
+پالت رنگی لوکس با مشکی عمیق ابسیدین، تفکیک ملایم لایه‌ها و کاهش خستگی چشم در محیط‌های کم‌نور:
 
-1. از [بخش Releases](https://github.com/Majidygh/woopanel/releases) فایل `woopanel.zip` را دانلود کنید
-2. پیشخوان وردپرس → افزونه‌ها → افزودن → بارگذاری افزونه
-3. فعال کنید و شورت‌کد را در یک صفحه بگذارید:
+<p align="center">
+  <img src="docs/screenshots/dark.png" width="100%" alt="حالت دارک‌مود ووپنل">
+</p>
 
+### ۳. بخش سفارش‌ها و فیلترهای وضعیت
+فیلترهای کپسولی وضعیت سفارش‌ها، تاریخچه خرید، ریزعکس محصولات و صفحه‌بندی هوشمند:
+
+<p align="center">
+  <img src="docs/screenshots/orders.png" width="100%" alt="لیست سفارش‌ها با فیلتر وضعیت">
+</p>
+
+### ۴. جزئیات سفارش و چاپ فاکتور
+نمایش کامل اقلام، سایز و رنگ، جمع مبالغ، وضعیت بسته و دکمه اختصاصی پرینت فاکتور:
+
+<p align="center">
+  <img src="docs/screenshots/order-detail.png" width="100%" alt="جزئیات سفارش و چاپ فاکتور">
+</p>
+
+### ۵. ریسپانسیو و نمای موبایل
+چیدمان ارگونومیک، سازگار با انواع ابعاد نمایشگرها و تبلت‌ها:
+
+<p align="center">
+  <img src="docs/screenshots/mobile.png" width="380" alt="نمای موبایل ووپنل">
+</p>
+
+---
+
+## بخش‌های پنل در یک نگاه
+
+| بخش | امکانات و توضیحات |
+| :--- | :--- |
+| **پیشخوان** | خوش‌آمدگویی، نوار رهگیری بستهٔ فعال، ۴ کارت آماری (تعداد سفارش، مجموع خرید، میانگین فاکتور، دانلودها)، جدول سفارش‌های اخیر |
+| **سفارش‌ها** | تاریخچه سفارشات، فیلتر آنی بر اساس وضعیت (در حال انجام، تکمیل شده، لغو شده و...)، پیش‌نمایش بندانگشتی کالاها، صفحه‌بندی |
+| **جزئیات سفارش** | فاکتور رسمی اقلام با متغیرها (سایز، رنگ)، خلاصه مالی، اطلاعات تحویل، کارت رهگیری پستی و دکمه چاپ |
+| **رهگیری مرسوله** | لیست تمام مرسوله‌های دارای کد رهگیری، کپی سریع کد با فیدبک بصری و اتصال مستقیم به شرکت ملی پست |
+| **دانلودها** | مدیریت فایل‌های دیجیتال و دانلودی با شمارشگر دفعات باقی‌مانده و تاریخ انقضا |
+| **نشانی‌ها** | ویرایش درجا و تمیز آدرس‌های صورت‌حساب و تحویل با فیلدهای استاندارد ووکامرس |
+| **حساب کاربری** | ویرایش نام، نام خانوادگی، ایمیل و تغییر امن کلمه عبور با تأیید رمز فعلی |
+
+---
+
+## راهنمای نصب و راه‌اندازی
+
+1. آخرین نسخهٔ آماده را از بخش **[Releases گیت‌هاب](https://github.com/Majidygh/woopanel/releases)** (فایل `woopanel-v1.7.0.zip`) دانلود کنید.
+2. در پیشخوان وردپرس به مسیر **افزونه‌ها ← افزودن افزونه ← بارگذاری افزونه** بروید و فایل زیپ را آپلود و فعال کنید.
+3. **انتخاب نحوه نمایش**:
+   * **حالت خودکار (پیشنهادی)**: ووپنل به‌صورت پیش‌فرض جایگزین صفحهٔ «حساب کاربری من» ووکامرس می‌شود و نیازی به تغییر دستی نیست.
+   * **استفاده با شورت‌کد**: شورت‌کد `[woopanel]` را در هر برگه‌ای که می‌خواهید قرار دهید. برای باز کردن یک تب خاص:
+     ```text
+     [woopanel view="orders"]
+     [woopanel view="tracking"]
+     ```
+
+---
+
+## هوک‌ها و فیلترهای توسعه‌دهندگان
+
+ووپنل طوری توسعه داده شده که بدون دستکاری در هسته، قابل شخصی‌سازی باشد:
+
+```php
+// افزودن آیتم جدید به سایدبار پنل
+add_filter( 'woopanel_nav_items', function( $items, $user_id ) {
+    $items['support'] = array(
+        'label'  => 'پشتیبانی تیکت',
+        'icon'   => 'chat',
+        'url'    => home_url( '/support/' ),
+        'active' => false,
+        'badge'  => '2',
+    );
+    return $items;
+}, 10, 2 );
+
+// سفارشی‌سازی ردیف‌های رهگیری پستی
+add_filter( 'woopanel_tracking_rows', function( $rows, $user_id ) {
+    // امکان اتصال متای شرکت‌های پستی اختصاصی مانند چاپار یا تیپاکس
+    return $rows;
+}, 10, 2 );
 ```
-[woopanel]
-```
 
-باز کردن مستقیم یک بخش:
-
-```
-[woopanel view="orders"]
-```
-
-## نحوه‌ی کار با ترجمه
-
-ووپنل رشته‌هایش را با دامنه‌ی `woopanel` بارگذاری می‌کند. روی سایت‌های فارسی (fa_IR) رابط به‌صورت خودکار فارسی و راست‌چین می‌شود؛ متن عنوان پنل و کلمه‌ی خوش‌آمد هم از تنظیمات قابل تغییر است.
-
-## امنیت
-
-- همه‌ی فرم‌ها **POST سمت سرور با nonce** و بررسی مالکیت — هیچ endpoint AJAX مهمان‌دستی وجود ندارد
-- نمای جزئیات سفارش **مالکیت را سختگیرانه چک می‌کند** (`order->get_user_id() === کاربر جاری`)
-- هیچ اطلاعات شخصی در URL منتقل نمی‌شود (الگوی PRG، بدون فوروارد nonce)
+---
 
 ## پیش‌نیازها
 
-- وردپرس ۶.۰ به بالا (تست‌شده تا ۷.۱)
-- ووکامرس ۷.۰ به بالا (تست‌شده تا ۱۱.۱)
-- PHP 7.4 به بالا
+* **وردپرس**: نسخه ۶.۰ یا بالاتر
+* **ووکامرس**: نسخه ۷.۰ یا بالاتر (سازگار کامل با HPOS)
+* **پی‌اچ‌پی**: نسخه ۷.۴ یا بالاتر (تست‌شده روی PHP 8.1 و 8.2 و 8.3)
 
-## اعتبار
+---
 
-ساخته‌شده توسط [majidygh](https://github.com/majidygh) · فونت [وزیرمتن](https://github.com/rastikerdar/vazirmatn) (SIL OFL 1.1)
+## لایسنس
 
-## مجوز
-
-GPL-2.0-or-later
+این پروژه تحت لایسنس **[GPL-2.0-or-later](LICENSE)** منتشر شده است.  
+توسعه‌داده‌شده توسط **[مجید یوسفی](https://github.com/Majidygh)**.
 
 </div>
 
 ---
 
-# WooPanel — Modern user dashboard for WooCommerce (English)
+# English Overview
 
-**WooPanel** replaces the WooCommerce "My Account" area with a clean, fast, fully RTL-aware customer panel — orders, downloads, addresses and account settings.
+**WooPanel** is a bespoke, lightweight, and ultra-modern customer account portal for WooCommerce. It seamlessly replaces the legacy WooCommerce "My Account" area with an elegant, craft-inspired interface.
 
-**Highlights:** zero JS dependencies · server-rendered · light/dark/system themes · custom accent color · optional My Account takeover · HPOS compatible · bundled Persian (fa_IR) translation with Vazirmatn font and native Persian digits.
+### Highlights:
+* **Bespoke UI Design**: Eliminates generic AI tropes in favor of an obsidian dark and crisp slate layout.
+* **Smart Active Shipment Tracking**: Shows an alert banner when an order has an active tracking code with direct integration to postal tracking.
+* **Order Item Visual Thumbnails**: Product thumbnails directly visible inside order tables and invoices.
+* **1-Click Print Invoice**: Print-optimized stylesheet for crisp paper invoices and PDF saving.
+* **3-Way Theme Switcher**: Light, Dark, and OS-synced Auto mode.
+* **Zero JavaScript Dependencies**: High performance, server-rendered PHP, clean and secure.
+* **Full RTL & Persian Localization**: Built-in Vazirmatn font, Persian numerals, and complete translation catalogs.
 
-**Install:** download `woopanel.zip` from [Releases](https://github.com/Majidygh/woopanel/releases) → Plugins → Add New → Upload → activate → place `[woopanel]` on any page.
-
-**Security:** nonce-verified server-side POST forms, strict order-ownership gate, no guest-reachable AJAX endpoints, no PII in URLs.
-
-**Author:** [majidygh](https://github.com/majidygh) · License: GPL-2.0-or-later
+### Installation:
+Download the latest `woopanel-v1.7.0.zip` from the [Releases](https://github.com/Majidygh/woopanel/releases) tab and upload it via **WordPress Admin → Plugins → Add New → Upload Plugin**.

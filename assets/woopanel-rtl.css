@@ -685,7 +685,7 @@
 }
 
 .wpl-card__value {
-	font-size: 18px;
+	font-size: 16px;
 	font-weight: 700;
 	color: var(--wpl-text);
 	white-space: nowrap;
