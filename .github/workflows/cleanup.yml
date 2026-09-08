@@ -1,0 +1,29 @@
+name: Cleanup Extra Asset
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete extra woopanel.zip asset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ASSET_ID=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
+            https://api.github.com/repos/${{ github.repository }}/releases/tags/v1.7.0 \
+            | jq -r '.assets[] | select(.name == "woopanel.zip") | .id')
+          if [ -n "$ASSET_ID" ] && [ "$ASSET_ID" != "null" ]; then
+            echo "Deleting asset $ASSET_ID..."
+            curl -s -X DELETE -H "Authorization: Bearer $GH_TOKEN" \
+              https://api.github.com/repos/${{ github.repository }}/releases/assets/$ASSET_ID
+            echo "Deleted successfully."
+          else
+            echo "Asset not found or already deleted."
+          fi
