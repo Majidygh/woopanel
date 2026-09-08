@@ -127,8 +127,10 @@ class WooPanel_Takeover {
 	}
 
 	/**
-	 * CSS that suppresses the theme/Woo account sidebar and stretches the
-	 * panel across the full page on account pages.
+	 * CSS that suppresses the theme/Woo account sidebar on account pages.
+	 *
+	 * The panel itself keeps the theme's standard content container (no
+	 * full-bleed) so it never overflows the theme frame on RTL layouts.
 	 *
 	 * @return void
 	 */
@@ -146,10 +148,6 @@ class WooPanel_Takeover {
 			. '.woocommerce-account .oceanwp-account-navigation-sidebar{display:none!important}'
 			// Let the content column take everything the sidebar left behind.
 			. '.woocommerce-account .woocommerce-MyAccount-content{width:100%!important;max-width:100%!important;flex:1 1 100%!important}'
-			// Full-bleed the panel past the theme's content container.
-			. 'body.woocommerce-account{overflow-x:clip}'
-			. '.wpl-panel--takeover{width:100vw;max-width:100vw;margin-inline:calc(50% - 50vw);border-radius:0;box-shadow:none}'
-			. '.wpl-panel--takeover .wpl-shell{min-height:calc(100vh - 120px)}'
 			// Theme page titles ("My account") duplicate the panel header.
 			. '.woocommerce-account .entry-title,.woocommerce-account .page-title,.woocommerce-account .wp-block-post-title,.woocommerce-account .woodmart-title-container{display:none!important}'
 			// Theme resets (button/svg display rules) must not eat the switcher.

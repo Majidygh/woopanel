@@ -86,10 +86,72 @@
 		});
 	}
 
+	function initCopy() {
+		document.addEventListener('click', function (ev) {
+			var btn = ev.target.closest ? ev.target.closest('[data-wpl-copy]') : null;
+			if (!btn) {
+				return;
+			}
+			var code = btn.getAttribute('data-wpl-copy') || '';
+			var original = btn.getAttribute('data-wpl-original');
+			var done = function () {
+				if (original === null) {
+					original = btn.innerHTML;
+					btn.setAttribute('data-wpl-original', original);
+				}
+				btn.classList.add('wpl-copied');
+				btn.textContent = '✓';
+				window.setTimeout(function () {
+					btn.innerHTML = original;
+					btn.classList.remove('wpl-copied');
+				}, 1600);
+			};
+			if (navigator.clipboard && navigator.clipboard.writeText) {
+				navigator.clipboard.writeText(code).then(done, function () { fallbackCopy(code); done(); });
+			} else {
+				fallbackCopy(code);
+				done();
+			}
+		});
+	}
+
+	function fallbackCopy(text) {
+		var ta = document.createElement('textarea');
+		ta.value = text;
+		ta.style.position = 'fixed';
+		ta.style.opacity = '0';
+		document.body.appendChild(ta);
+		ta.select();
+		try { document.execCommand('copy'); } catch (e) {}
+		document.body.removeChild(ta);
+	}
+
+	function initSpotlight() {
+		var panels = document.querySelectorAll('[data-woopanel]');
+		for (var i = 0; i < panels.length; i++) {
+			(function (panel) {
+				if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+					return;
+				}
+				panel.addEventListener('mousemove', function (ev) {
+					var card = ev.target.closest ? ev.target.closest('.wpl-card, .wpl-trackcard') : null;
+					if (!card || !panel.contains(card)) {
+						return;
+					}
+					var r = card.getBoundingClientRect();
+					card.style.setProperty('--wpl-mx', Math.round(ev.clientX - r.left) + 'px');
+					card.style.setProperty('--wpl-my', Math.round(ev.clientY - r.top) + 'px');
+				});
+			})(panels[i]);
+		}
+	}
+
 	function init() {
 		initTheme();
 		bindThemeButtons();
 		bindToggles();
+		initCopy();
+		initSpotlight();
 	}
 
 	if (document.readyState === 'loading') {

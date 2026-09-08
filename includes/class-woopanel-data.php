@@ -168,6 +168,51 @@ class WooPanel_Data {
 	}
 
 	/**
+	 * Tracking (post barcode) rows for a customer's orders.
+	 *
+	 * Reads the `post_barcode` order meta — the same field filled in the
+	 * WooCommerce order edit screen — for the customer's recent orders and
+	 * builds an Iranian Post tracking deep link per code.
+	 *
+	 * @param int $user_id User ID.
+	 * @param int $limit   How many recent orders to scan.
+	 * @return array Each: order_id, number, date, status, code, url.
+	 */
+	public static function get_tracking( $user_id, $limit = 25 ) {
+		$rows = array();
+		if ( ! self::is_woo() ) {
+			return $rows;
+		}
+		$orders = self::get_orders( $user_id, $limit );
+		foreach ( $orders as $order ) {
+			$code = trim( (string) $order->get_meta( 'post_barcode', true ) );
+			if ( '' === $code ) {
+				// Common carrier-metabox key names as fallbacks.
+				foreach ( array( 'tracking_code', '_tracking_code', 'wc_tracking_code' ) as $alt ) {
+					$candidate = trim( (string) $order->get_meta( $alt, true ) );
+					if ( '' !== $candidate ) {
+						$code = $candidate;
+						break;
+					}
+				}
+			}
+			// Codes are alphanumeric (Iran Post: 14/20/24 digits, sometimes letters+digits).
+			if ( '' === $code || ! preg_match( '/^[A-Za-z0-9\-_]{6,32}$/', $code ) ) {
+				continue;
+			}
+			$rows[] = array(
+				'order_id' => $order->get_id(),
+				'number'   => $order->get_order_number(),
+				'date'     => $order->get_date_created() ? $order->get_date_created()->date_i18n( get_option( 'date_format' ) ) : '',
+				'status'   => $order->get_status(),
+				'code'     => $code,
+				'url'      => 'https://tracking.post.ir/?id=' . rawurlencode( $code ),
+			);
+		}
+		return apply_filters( 'woopanel_tracking_rows', $rows, $user_id );
+	}
+
+	/**
 	 * Address fields shared by view + edit forms.
 	 *
 	 * @param string $type 'billing' or 'shipping'.
@@ -229,6 +274,7 @@ class WooPanel_Data {
 		$items = array(
 			array( 'slug' => 'dashboard', 'label' => __( 'Dashboard', 'woopanel' ), 'icon' => 'grid' ),
 			array( 'slug' => 'orders',    'label' => __( 'Orders', 'woopanel' ),    'icon' => 'bag' ),
+			array( 'slug' => 'tracking',  'label' => __( 'Tracking', 'woopanel' ),  'icon' => 'truck' ),
 			array( 'slug' => 'downloads', 'label' => __( 'Downloads', 'woopanel' ), 'icon' => 'download' ),
 			array( 'slug' => 'address',   'label' => __( 'Addresses', 'woopanel' ), 'icon' => 'pin' ),
 			array( 'slug' => 'account',   'label' => __( 'Account', 'woopanel' ),   'icon' => 'user' ),
@@ -252,10 +298,12 @@ class WooPanel_Data {
 
 		foreach ( $items as $i => $item ) {
 			$items[ $i ]['active'] = ( $item['slug'] === $current );
-			if ( $takeover ) {
-				$ep              = $endpoints[ $item['slug'] ];
+			if ( $takeover && array_key_exists( $item['slug'], $endpoints ) ) {
+				$ep               = $endpoints[ $item['slug'] ];
 				$items[ $i ]['url'] = false === $ep ? wc_get_account_endpoint_url( 'dashboard' ) : wc_get_account_endpoint_url( $ep );
 			} else {
+				// WooPanel-native views (e.g. tracking) use query-string nav —
+				// no rewrite endpoint needed, so no rule flush ever.
 				$items[ $i ]['url'] = woopanel_panel_url( array( 'woopanel_view' => $item['slug'] ) );
 			}
 		}

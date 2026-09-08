@@ -57,6 +57,12 @@ TR = {
     'Panel appearance': 'ظاهر پنل',
     'System theme': 'تم سیستم',
     'Dark theme': 'تم تیره',
+    'Tracking': 'رهگیری مرسوله',
+    'Tracking code': 'کد رهگیری',
+    'Copy': 'کپی',
+    'Track shipment': 'رهگیری بسته',
+    'Order %s': 'سفارش %s',
+    'No tracked shipments yet. You will see a tracking code here once your order is shipped.': 'هنوز مرسوله‌ای برای رهگیری نیست. پس از ارسال سفارش، کد رهگیری اینجا نمایش داده می‌شود.',
     # Navigation / shell
     'My Panel': 'پنل من',
     'Welcome, %s': 'خوش آمدید، %s',

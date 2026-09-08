@@ -29,7 +29,7 @@ class WooPanel_Shortcode {
 	 * @return string
 	 */
 	private static function resolve_view( $atts ) {
-		$allowed = array( 'dashboard', 'orders', 'downloads', 'address', 'account', 'order' );
+		$allowed = array( 'dashboard', 'orders', 'downloads', 'address', 'account', 'order', 'tracking' );
 		$view    = isset( $_GET['woopanel_view'] ) ? sanitize_key( wp_unslash( $_GET['woopanel_view'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only navigation state.
 		if ( '' === $view && ! empty( $atts['view'] ) ) {
 			$view = sanitize_key( $atts['view'] );
@@ -108,7 +108,7 @@ class WooPanel_Shortcode {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only navigation state.
 		$view = isset( $_GET['woopanel_view'] ) ? sanitize_key( wp_unslash( $_GET['woopanel_view'] ) ) : 'dashboard';
-		$view = in_array( $view, array( 'dashboard', 'orders', 'downloads', 'address', 'account', 'order' ), true ) ? $view : 'dashboard';
+		$view = in_array( $view, array( 'dashboard', 'orders', 'downloads', 'address', 'account', 'order', 'tracking' ), true ) ? $view : 'dashboard';
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- panel escapes internally.
 		echo WooPanel_Render::panel( $view, array(), 'takeover' );

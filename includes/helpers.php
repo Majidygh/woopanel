@@ -132,6 +132,9 @@ function woopanel_icon( $name, $size = 20 ) {
 		'calendar' => '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
 		'wallet'   => '<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/>',
 		'file'     => '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15h6"/>',
+		'truck'    => '<path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
+		'copy'     => '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+		'external' => '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/>',
 	);
 	$d = isset( $paths[ $name ] ) ? $paths[ $name ] : $paths['grid'];
 
@@ -155,5 +158,27 @@ function woopanel_panel_url( $args = array() ) {
 		$base = home_url( '/' );
 	}
 	return add_query_arg( $args, $base );
+}
+
+/**
+ * Render text with Western digits kept as HTML entities.
+ *
+ * woopanel_localize_digits_html() skips `&#nn;` sequences, so a tracking
+ * code passed through this helper always stays copy-pasteable Latin digits
+ * even on a Persian locale.
+ *
+ * @param string $text Raw code (letters/digits/dashes).
+ * @return string Escaped entity string.
+ */
+function woopanel_keep_latin( $text ) {
+	$escaped = htmlspecialchars( (string) $text, ENT_QUOTES, 'UTF-8' );
+	// Single pass: array str_replace would cascade into its own inserted entities.
+	return preg_replace_callback(
+		'/\d/',
+		function ( $m ) {
+			return '&#' . ( 48 + (int) $m[0] ) . ';';
+		},
+		$escaped
+	);
 }
 

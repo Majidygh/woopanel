@@ -86,6 +86,9 @@ msgstr "پیشخوان"
 msgid "Orders"
 msgstr "سفارش‌ها"
 
+msgid "Tracking"
+msgstr "رهگیری مرسوله"
+
 msgid "Downloads"
 msgstr "دانلودها"
 
@@ -104,9 +107,6 @@ msgstr "سلام"
 msgid "WooPanel requires WooCommerce to be installed and active."
 msgstr "ووپنل برای کار به نصب و فعال بودن ووکامرس نیاز دارد."
 
-msgid "Welcome, %s"
-msgstr "خوش آمدید، %s"
-
 msgid "Panel appearance"
 msgstr "ظاهر پنل"
 
@@ -118,6 +118,9 @@ msgstr "تم سیستم"
 
 msgid "Dark theme"
 msgstr "تم تیره"
+
+msgid "Welcome, %s"
+msgstr "خوش آمدید، %s"
 
 msgid "Log out"
 msgstr "خروج"
@@ -196,6 +199,21 @@ msgstr "نشانی صورت‌حساب"
 
 msgid "Shipping address"
 msgstr "نشانی حمل و نقل"
+
+msgid "Tracking code"
+msgstr "کد رهگیری"
+
+msgid "Copy"
+msgstr "کپی"
+
+msgid "Track shipment"
+msgstr "رهگیری بسته"
+
+msgid "No tracked shipments yet. You will see a tracking code here once your order is shipped."
+msgstr "هنوز مرسوله‌ای برای رهگیری نیست. پس از ارسال سفارش، کد رهگیری اینجا نمایش داده می‌شود."
+
+msgid "Order %s"
+msgstr "سفارش %s"
 
 msgid "No downloads available yet."
 msgstr "هنوز فایلی برای دانلود ندارید."

@@ -91,6 +91,14 @@ class WooPanel_Render {
 		}
 		// Endpoints WooPanel doesn't own (view-order, wishlists, …) stay Woo-native.
 		if ( function_exists( 'is_wc_endpoint_url' ) && is_wc_endpoint_url() ) {
+			// WooPanel-native views reachable via query string on the account
+			// page (e.g. ?woopanel_view=tracking) are panel pages too.
+			if ( isset( $_GET['woopanel_view'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only navigation state.
+				$wv = sanitize_key( wp_unslash( $_GET['woopanel_view'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				if ( in_array( $wv, array( 'dashboard', 'orders', 'downloads', 'address', 'account', 'order', 'tracking' ), true ) ) {
+					return true;
+				}
+			}
 			global $wp;
 			$map = class_exists( 'WooPanel_Takeover' ) ? WooPanel_Takeover::endpoint_map() : array();
 			unset( $map[''] );
@@ -504,6 +512,110 @@ class WooPanel_Render {
 				<div class="wpl-addrcard">
 					<h4 class="wpl-addrcard__title"><?php echo esc_html( $label ); ?></h4>
 					<address class="wpl-addrcard__body"><?php echo wp_kses_post( wc()->countries ? wc()->countries->get_formatted_address( $addr ) : '' ); ?></address>
+				</div>
+			<?php endforeach; ?>
+		</div>
+
+		<?php echo self::tracking_card( $order ); // phpcs:ignore WordPress.Security.EscapeOutput -- escapes internally. ?>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Post-tracking code for an order (set in the order edit screen as
+	 * `post_barcode`), with the common carrier-plugin keys as fallbacks.
+	 *
+	 * @param WC_Order $order Order.
+	 * @return string Raw code or ''.
+	 */
+	public static function order_tracking_code( $order ) {
+		$code = trim( (string) $order->get_meta( 'post_barcode', true ) );
+		if ( '' === $code ) {
+			foreach ( array( 'tracking_code', '_tracking_code', 'wc_tracking_code' ) as $alt ) {
+				$candidate = trim( (string) $order->get_meta( $alt, true ) );
+				if ( '' !== $candidate ) {
+					$code = $candidate;
+					break;
+				}
+			}
+		}
+		if ( '' === $code || ! preg_match( '/^[A-Za-z0-9\-_]{6,32}$/', $code ) ) {
+			return '';
+		}
+		return $code;
+	}
+
+	/**
+	 * Tracking card for a single order: code + copy + Iran Post deep link.
+	 *
+	 * @param WC_Order $order Order.
+	 * @return string HTML (empty when no code).
+	 */
+	private static function tracking_card( $order ) {
+		$code = self::order_tracking_code( $order );
+		if ( '' === $code ) {
+			return '';
+		}
+		ob_start();
+		?>
+		<div class="wpl-trackcard">
+			<div class="wpl-trackcard__icon"><?php echo woopanel_icon( 'truck', 22 ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
+			<div class="wpl-trackcard__body">
+				<span class="wpl-trackcard__label"><?php echo esc_html__( 'Tracking code', 'woopanel' ); ?>:</span>
+				<code class="wpl-trackcard__code" dir="ltr"><?php echo woopanel_keep_latin( $code ); // phpcs:ignore WordPress.Security.EscapeOutput -- entity-safe. ?></code>
+			</div>
+			<button type="button" class="wpl-btn wpl-btn--ghost wpl-btn--sm wpl-copycode" data-wpl-copy="<?php echo esc_attr( $code ); ?>"><?php echo woopanel_icon( 'copy', 14 ); // phpcs:ignore WordPress.Security.EscapeOutput ?> <?php esc_html_e( 'Copy', 'woopanel' ); ?></button>
+			<a class="wpl-btn wpl-btn--sm wpl-trackcard__go" href="<?php echo esc_url( 'https://tracking.post.ir/?id=' . rawurlencode( $code ) ); ?>" target="_blank" rel="noopener"><?php echo woopanel_icon( 'external', 14 ); // phpcs:ignore WordPress.Security.EscapeOutput ?> <?php esc_html_e( 'Track shipment', 'woopanel' ); ?></a>
+		</div>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Tracking view: every shipped order with a post barcode.
+	 *
+	 * @param int     $user_id Current user ID.
+	 * @param WP_User $user    Current user.
+	 * @param array   $options Options.
+	 * @return string
+	 */
+	private static function view_tracking( $user_id, $user, $options ) {
+		$rows = WooPanel_Data::get_tracking( $user_id, 30 );
+		ob_start();
+		if ( empty( $rows ) ) {
+			?>
+			<div class="wpl-empty">
+				<?php echo woopanel_icon( 'truck', 30 ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+				<p><?php esc_html_e( 'No tracked shipments yet. You will see a tracking code here once your order is shipped.', 'woopanel' ); ?></p>
+			</div>
+			<?php
+			return (string) ob_get_clean();
+		}
+		?>
+		<div class="wpl-trackgrid">
+			<?php foreach ( $rows as $row ) : ?>
+				<div class="wpl-trackcard">
+					<div class="wpl-trackcard__icon"><?php echo woopanel_icon( 'truck', 22 ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
+					<div class="wpl-trackcard__body">
+						<span class="wpl-trackcard__label">
+							<?php
+							printf(
+								/* translators: %s: order number */
+								esc_html__( 'Order %s', 'woopanel' ),
+								'<a class="wpl-orderlink" href="' . esc_url( woopanel_panel_url( array( 'woopanel_view' => 'order', 'woopanel_order' => (string) $row['order_id'] ) ) ) . '">#' . esc_html( woopanel_localize_digits( $row['number'] ) ) . '</a>'
+							);
+							?>
+							<span class="wpl-badge <?php echo esc_attr( woopanel_status_class( $row['status'] ) ); ?>"><?php echo esc_html( woopanel_status_label( $row['status'] ) ); ?></span>
+						</span>
+						<code class="wpl-trackcard__code" dir="ltr"><?php echo woopanel_keep_latin( $row['code'] ); // phpcs:ignore WordPress.Security.EscapeOutput -- entity-safe. ?></code>
+						<?php if ( '' !== $row['date'] ) : ?>
+							<span class="wpl-trackcard__date"><?php echo esc_html( $row['date'] ); ?></span>
+						<?php endif; ?>
+					</div>
+					<div class="wpl-trackcard__actions">
+						<button type="button" class="wpl-btn wpl-btn--ghost wpl-btn--sm wpl-copycode" data-wpl-copy="<?php echo esc_attr( $row['code'] ); ?>"><?php echo woopanel_icon( 'copy', 14 ); // phpcs:ignore WordPress.Security.EscapeOutput ?> <?php esc_html_e( 'Copy', 'woopanel' ); ?></button>
+						<a class="wpl-btn wpl-btn--sm wpl-trackcard__go" href="<?php echo esc_url( $row['url'] ); ?>" target="_blank" rel="noopener"><?php echo woopanel_icon( 'external', 14 ); // phpcs:ignore WordPress.Security.EscapeOutput ?> <?php esc_html_e( 'Track shipment', 'woopanel' ); ?></a>
+					</div>
 				</div>
 			<?php endforeach; ?>
 		</div>
