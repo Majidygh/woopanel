@@ -19,7 +19,7 @@ class WooPanel_Render {
 	 * @param string $default Fallback.
 	 * @return string
 	 */
-	public static function sanitize_hex_color( $color, $default = '#9a3412' ) {
+	public static function sanitize_hex_color( $color, $default = '#0d7a6f' ) {
 		$color = is_string( $color ) ? trim( $color ) : '';
 		if ( preg_match( '/^#([A-Fa-f0-9]{3})$/', $color ) ) {
 			// Expand shorthand (#abc -> #aabbcc) so fixed-offset RGB parsing stays valid.
@@ -42,8 +42,8 @@ class WooPanel_Render {
 		wp_style_add_data( 'woopanel', 'rtl', 'replace' );
 
 		$options = woopanel_get_options();
-		$accent  = self::sanitize_hex_color( $options['accent'], '#9a3412' );
-		$bg      = self::sanitize_hex_color( $options['accent_bg'], '#fbf1ea' );
+		$accent  = self::sanitize_hex_color( $options['accent'], '#0d7a6f' );
+		$bg      = self::sanitize_hex_color( $options['accent_bg'], '#e4f2ef' );
 
 		$css = sprintf(
 			'.wpl-panel{--wpl-accent:%1$s;--wpl-accent-soft:%2$s;--wpl-accent-rgb:%3$d %4$d %5$d;}',
@@ -264,8 +264,8 @@ class WooPanel_Render {
 
 		ob_start();
 		?>
-		<div class="wpl-hero">
-			<h3 class="wpl-hero__title"><?php echo wp_kses( esc_html( $welcome ) . '، <bdi>' . ( $user ? esc_html( $user->display_name ) : '' ) . '</bdi>', array( 'bdi' => array() ) ); ?></h3>
+		<div class="wpl-hero wpl-hero--glam">
+			<h3 class="wpl-hero__title"><?php echo wp_kses( esc_html( $welcome ) . '، <bdi>' . ( $user ? esc_html( $user->display_name ) : '' ) . '</bdi> 👋', array( 'bdi' => array() ) ); ?></h3>
 			<p class="wpl-hero__text"><?php esc_html_e( 'Here is a summary of your account.', 'woopanel' ); ?></p>
 		</div>
 		<div class="wpl-cards">

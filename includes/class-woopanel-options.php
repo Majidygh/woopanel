@@ -26,8 +26,8 @@ class WooPanel_Options {
 		 * even after the options row was first written under another locale.
 		 */
 		return array(
-			'accent'            => '#9a3412',
-			'accent_bg'         => '#fbf1ea',
+			'accent'            => '#0d7a6f',
+			'accent_bg'         => '#e4f2ef',
 			'replace_dashboard' => 0,
 			'orders_per_page'   => 8,
 			'panel_title'       => '',
@@ -83,20 +83,22 @@ class WooPanel_Options {
 	 * a store owner who picked a custom accent is left untouched.
 	 */
 	public static function maybe_upgrade() {
-		if ( '1.0' === get_option( 'woopanel_theme_default_version', false ) ) {
+		if ( '2.0' === get_option( 'woopanel_theme_default_version', false ) ) {
 			return;
 		}
 		$saved = get_option( self::OPTION_KEY, array() );
 		if ( is_array( $saved ) && ! empty( $saved ) ) {
 			$accent = isset( $saved['accent'] ) ? strtolower( trim( (string) $saved['accent'] ) ) : '';
 			$bg     = isset( $saved['accent_bg'] ) ? strtolower( trim( (string) $saved['accent_bg'] ) ) : '';
-			if ( '#7c3aed' === $accent && '#f5f3ff' === $bg ) {
-				$saved['accent']    = '#9a3412';
-				$saved['accent_bg'] = '#fbf1ea';
+			// Shipped defaults across versions: v1.0 purple, v1.2 brick.
+			$legacy = array( '#7c3aed' => '#f5f3ff', '#9a3412' => '#fbf1ea' );
+			if ( isset( $legacy[ $accent ] ) && $legacy[ $accent ] === $bg ) {
+				$saved['accent']    = '#0d7a6f';
+				$saved['accent_bg'] = '#e4f2ef';
 				update_option( self::OPTION_KEY, $saved );
 			}
 		}
-		update_option( 'woopanel_theme_default_version', '1.0' );
+		update_option( 'woopanel_theme_default_version', '2.0' );
 	}
 
 	/**
