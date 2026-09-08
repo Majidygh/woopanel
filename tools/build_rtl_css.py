@@ -16,7 +16,7 @@ import pathlib
 import shutil
 import subprocess
 
-ROOT = pathlib.Path('/root/woopanel')
+ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / 'assets' / 'woopanel.css'
 DST = ROOT / 'assets' / 'woopanel-rtl.css'
 

@@ -129,6 +129,16 @@ class WooPanel_Data {
 		$rows = array();
 		foreach ( $orders as $order ) {
 			$status = $order->get_status();
+			$items_summary = array();
+			foreach ( $order->get_items() as $item ) {
+				$product = $item->get_product();
+				$thumb   = $product ? $product->get_image( array( 40, 40 ), array( 'class' => 'wpl-item-thumb', 'alt' => esc_attr( $item->get_name() ) ) ) : '';
+				$items_summary[] = array(
+					'name'  => $item->get_name(),
+					'qty'   => $item->get_quantity(),
+					'thumb' => $thumb,
+				);
+			}
 			$rows[] = array(
 				'id'           => $order->get_id(),
 				'number'       => $order->get_order_number(),
@@ -138,6 +148,7 @@ class WooPanel_Data {
 				'date'         => $order->get_date_created() ? $order->get_date_created()->date_i18n( get_option( 'date_format' ) ) : '',
 				'total'        => $order->get_formatted_order_total(),
 				'item_count'   => $order->get_item_count(),
+				'items'        => $items_summary,
 			);
 		}
 		return $rows;
@@ -270,7 +281,7 @@ class WooPanel_Data {
 	 * @param string $current Current view.
 	 * @return array[] each: slug, label, icon
 	 */
-	public static function nav_items( $current ) {
+	public static function nav_items( $current, $user_id = 0 ) {
 		$items = array(
 			array( 'slug' => 'dashboard', 'label' => __( 'Dashboard', 'woopanel' ), 'icon' => 'grid' ),
 			array( 'slug' => 'orders',    'label' => __( 'Orders', 'woopanel' ),    'icon' => 'bag' ),
@@ -307,6 +318,6 @@ class WooPanel_Data {
 				$items[ $i ]['url'] = woopanel_panel_url( array( 'woopanel_view' => $item['slug'] ) );
 			}
 		}
-		return $items;
+		return apply_filters( 'woopanel_nav_items', $items, $current, $user_id );
 	}
 }

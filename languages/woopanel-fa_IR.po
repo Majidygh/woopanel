@@ -107,20 +107,29 @@ msgstr "سلام"
 msgid "WooPanel requires WooCommerce to be installed and active."
 msgstr "ووپنل برای کار به نصب و فعال بودن ووکامرس نیاز دارد."
 
+msgid "Customer Portal"
+msgstr "پورتال مشتریان"
+
 msgid "Panel appearance"
 msgstr "ظاهر پنل"
 
 msgid "Light theme"
 msgstr "تم روشن"
 
+msgid "Light"
+msgstr "روشن"
+
 msgid "System theme"
 msgstr "تم سیستم"
+
+msgid "Auto"
+msgstr "خودکار"
 
 msgid "Dark theme"
 msgstr "تم تیره"
 
-msgid "Welcome, %s"
-msgstr "خوش آمدید، %s"
+msgid "Dark"
+msgstr "تیره"
 
 msgid "Log out"
 msgstr "خروج"
@@ -134,17 +143,44 @@ msgstr "برای مشاهده‌ی پنل خود وارد شوید."
 msgid "Log in"
 msgstr "ورود"
 
+msgid "Total placed orders"
+msgstr "کل سفارش‌های ثبت‌شده"
+
 msgid "Total spent"
 msgstr "مجموع خرید"
+
+msgid "Successful payments"
+msgstr "پرداخت‌های موفق"
 
 msgid "Average order"
 msgstr "میانگین سفارش"
 
+msgid "Per purchase value"
+msgstr "ارزش هر خرید"
+
 msgid "Available downloads"
 msgstr "دانلودهای موجود"
 
+msgid "Digital assets"
+msgstr "فایل‌ها و دارایی‌های دیجیتال"
+
 msgid "Here is a summary of your account."
 msgstr "خلاصه‌ای از حساب کاربری شما."
+
+msgid "Shipment for order %s is in transit"
+msgstr "مرسوله‌ی سفارش %s در حال ارسال است"
+
+msgid "Tracking code"
+msgstr "کد رهگیری"
+
+msgid "Copied!"
+msgstr "کپی شد!"
+
+msgid "Copy"
+msgstr "کپی"
+
+msgid "Track shipment"
+msgstr "رهگیری بسته"
 
 msgid "Recent orders"
 msgstr "سفارش‌های اخیر"
@@ -158,8 +194,17 @@ msgstr "همه"
 msgid "No orders found."
 msgstr "سفارشی یافت نشد."
 
+msgid "You have not placed any orders yet. Visit our store to find what you need."
+msgstr "هنوز سفارشی ثبت نکرده‌اید. از فروشگاه دیدن کنید تا موارد دلخواه خود را بیابید."
+
+msgid "Go to shop"
+msgstr "رفتن به فروشگاه"
+
 msgid "Order"
 msgstr "سفارش"
+
+msgid "Items"
+msgstr "اقلام"
 
 msgid "Date"
 msgstr "تاریخ"
@@ -170,11 +215,29 @@ msgstr "وضعیت"
 msgid "Total"
 msgstr "مجموع"
 
+msgid "Action"
+msgstr "عملیات"
+
+msgid "%d item(s)"
+msgstr "%d قلم"
+
+msgid "View"
+msgstr "مشاهده"
+
 msgid "Order not found."
 msgstr "سفارشی یافت نشد."
 
 msgid "Back to orders"
 msgstr "بازگشت به سفارش‌ها"
+
+msgid "Print invoice"
+msgstr "چاپ فاکتور"
+
+msgid "Order #%s"
+msgstr "سفارش شماره %s"
+
+msgid "Total amount"
+msgstr "مبلغ کل"
 
 msgid "Product"
 msgstr "محصول"
@@ -200,23 +263,20 @@ msgstr "نشانی صورت‌حساب"
 msgid "Shipping address"
 msgstr "نشانی حمل و نقل"
 
-msgid "Tracking code"
-msgstr "کد رهگیری"
+msgid "No tracked shipments yet."
+msgstr "هنوز مرسوله‌ای برای رهگیری ثبت نشده است."
 
-msgid "Copy"
-msgstr "کپی"
-
-msgid "Track shipment"
-msgstr "رهگیری بسته"
-
-msgid "No tracked shipments yet. You will see a tracking code here once your order is shipped."
-msgstr "هنوز مرسوله‌ای برای رهگیری نیست. پس از ارسال سفارش، کد رهگیری اینجا نمایش داده می‌شود."
+msgid "You will see a tracking code here once your order is shipped."
+msgstr "پس از ارسال سفارش، کد رهگیری در اینجا نمایش داده می‌شود."
 
 msgid "Order %s"
 msgstr "سفارش %s"
 
 msgid "No downloads available yet."
 msgstr "هنوز فایلی برای دانلود ندارید."
+
+msgid "When you purchase downloadable products, they will be listed here."
+msgstr "هنگامی که محصولات دانلودی خریداری کنید، در اینجا نمایش داده می‌شوند."
 
 msgid "Remaining: %s"
 msgstr "باقی‌مانده: %s"

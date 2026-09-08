@@ -1,27 +1,32 @@
 /**
- * WooPanel — front-end behavior (theme switcher, edit toggles).
- * No dependencies.
+ * WooPanel — modern, dependency-free front-end script.
+ * Handles appearance theme switching, form toggles, copy-to-clipboard, and print actions.
  */
 (function () {
 	'use strict';
 
 	var STORAGE_KEY = 'woopanel_theme';
 
-	function panels() {
+	function getPanels() {
 		return document.querySelectorAll('[data-woopanel]');
 	}
 
-	function applyTheme(panel, theme) {
-		if (theme === 'system') {
-			panel.removeAttribute('data-wpl-theme');
-		} else {
-			panel.setAttribute('data-wpl-theme', theme);
-		}
-		var btns = panel.querySelectorAll('[data-wpl-theme-set]');
-		for (var i = 0; i < btns.length; i++) {
-			var active = btns[i].getAttribute('data-wpl-theme-set') === theme;
-			btns[i].classList.toggle('is-active', active);
-			btns[i].setAttribute('aria-pressed', active ? 'true' : 'false');
+	function applyTheme(theme) {
+		var all = getPanels();
+		for (var i = 0; i < all.length; i++) {
+			var panel = all[i];
+			if (theme === 'system') {
+				panel.removeAttribute('data-wpl-theme');
+			} else {
+				panel.setAttribute('data-wpl-theme', theme);
+			}
+
+			var btns = panel.querySelectorAll('[data-wpl-theme-set]');
+			for (var b = 0; b < btns.length; b++) {
+				var active = btns[b].getAttribute('data-wpl-theme-set') === theme;
+				btns[b].classList.toggle('is-active', active);
+				btns[b].setAttribute('aria-pressed', active ? 'true' : 'false');
+			}
 		}
 	}
 
@@ -35,12 +40,21 @@
 
 	function initTheme() {
 		var theme = savedTheme();
-		if (theme === 'system') {
-			return; // default markup already means "system"
-		}
-		var all = panels();
-		for (var i = 0; i < all.length; i++) {
-			applyTheme(all[i], theme);
+		applyTheme(theme);
+
+		// Watch system color scheme changes if user chose 'system'
+		if (window.matchMedia) {
+			var mql = window.matchMedia('(prefers-color-scheme: dark)');
+			var listener = function () {
+				if (savedTheme() === 'system') {
+					applyTheme('system');
+				}
+			};
+			if (mql.addEventListener) {
+				mql.addEventListener('change', listener);
+			} else if (mql.addListener) {
+				mql.addListener(listener);
+			}
 		}
 	}
 
@@ -50,22 +64,18 @@
 			if (!btn) {
 				return;
 			}
-			var panel = btn.closest('[data-woopanel]');
-			if (!panel) {
+			var theme = btn.getAttribute('data-wpl-theme-set');
+			if (!theme) {
 				return;
 			}
-			var theme = btn.getAttribute('data-wpl-theme-set');
-			applyTheme(panel, theme);
+			applyTheme(theme);
 			try {
 				localStorage.setItem(STORAGE_KEY, theme);
 			} catch (e) {
-				/* private mode */
+				/* private browsing */
 			}
 		});
 	}
-
-	/* ---- "Follow the site theme": read the store's real brand color from
-	   its own rendered styles and paint the panel with it. ---- */
 
 	function bindToggles() {
 		document.addEventListener('click', function (ev) {
@@ -73,44 +83,61 @@
 			if (!btn) {
 				return;
 			}
-			var target = document.getElementById(btn.getAttribute('data-wpl-toggle'));
+			var targetId = btn.getAttribute('data-wpl-toggle');
+			var target = document.getElementById(targetId);
 			if (!target) {
 				return;
 			}
-			var show = target.hidden;
-			target.hidden = !show;
-			btn.setAttribute('aria-expanded', show ? 'true' : 'false');
-			btn.textContent = show
-				? btn.getAttribute('data-wpl-label-close') || 'Close'
-				: btn.getAttribute('data-wpl-label-open') || 'Edit';
+			var isShowing = !target.hidden;
+			target.hidden = isShowing;
+			btn.setAttribute('aria-expanded', isShowing ? 'false' : 'true');
+
+			var openLabel = btn.getAttribute('data-wpl-label-open') || 'Edit';
+			var closeLabel = btn.getAttribute('data-wpl-label-close') || 'Close';
+			btn.textContent = isShowing ? openLabel : closeLabel;
 		});
 	}
 
-	function initCopy() {
+	function bindCopy() {
 		document.addEventListener('click', function (ev) {
 			var btn = ev.target.closest ? ev.target.closest('[data-wpl-copy]') : null;
 			if (!btn) {
 				return;
 			}
 			var code = btn.getAttribute('data-wpl-copy') || '';
-			var original = btn.getAttribute('data-wpl-original');
-			var done = function () {
-				if (original === null) {
-					original = btn.innerHTML;
-					btn.setAttribute('data-wpl-original', original);
-				}
+			if (!code) {
+				return;
+			}
+
+			var originalHtml = btn.getAttribute('data-wpl-original');
+			if (originalHtml === null) {
+				originalHtml = btn.innerHTML;
+				btn.setAttribute('data-wpl-original', originalHtml);
+			}
+
+			var showSuccess = function () {
 				btn.classList.add('wpl-copied');
-				btn.textContent = '✓';
+				btn.setAttribute('aria-label', 'کپی شد');
+				var textSpan = btn.querySelector('.wpl-copy-text');
+				if (textSpan) {
+					textSpan.textContent = textSpan.getAttribute('data-done-text') || '✓ کپی شد';
+				} else {
+					btn.textContent = '✓ کپی شد';
+				}
 				window.setTimeout(function () {
-					btn.innerHTML = original;
+					btn.innerHTML = originalHtml;
 					btn.classList.remove('wpl-copied');
-				}, 1600);
+				}, 1800);
 			};
+
 			if (navigator.clipboard && navigator.clipboard.writeText) {
-				navigator.clipboard.writeText(code).then(done, function () { fallbackCopy(code); done(); });
+				navigator.clipboard.writeText(code).then(showSuccess, function () {
+					fallbackCopy(code);
+					showSuccess();
+				});
 			} else {
 				fallbackCopy(code);
-				done();
+				showSuccess();
 			}
 		});
 	}
@@ -120,38 +147,31 @@
 		ta.value = text;
 		ta.style.position = 'fixed';
 		ta.style.opacity = '0';
+		ta.style.left = '-9999px';
 		document.body.appendChild(ta);
 		ta.select();
-		try { document.execCommand('copy'); } catch (e) {}
+		try {
+			document.execCommand('copy');
+		} catch (e) {}
 		document.body.removeChild(ta);
 	}
 
-	function initSpotlight() {
-		var panels = document.querySelectorAll('[data-woopanel]');
-		for (var i = 0; i < panels.length; i++) {
-			(function (panel) {
-				if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-					return;
-				}
-				panel.addEventListener('mousemove', function (ev) {
-					var card = ev.target.closest ? ev.target.closest('.wpl-card, .wpl-trackcard') : null;
-					if (!card || !panel.contains(card)) {
-						return;
-					}
-					var r = card.getBoundingClientRect();
-					card.style.setProperty('--wpl-mx', Math.round(ev.clientX - r.left) + 'px');
-					card.style.setProperty('--wpl-my', Math.round(ev.clientY - r.top) + 'px');
-				});
-			})(panels[i]);
-		}
+	function bindPrint() {
+		document.addEventListener('click', function (ev) {
+			var btn = ev.target.closest ? ev.target.closest('[data-wpl-print]') : null;
+			if (!btn) {
+				return;
+			}
+			window.print();
+		});
 	}
 
 	function init() {
 		initTheme();
 		bindThemeButtons();
 		bindToggles();
-		initCopy();
-		initSpotlight();
+		bindCopy();
+		bindPrint();
 	}
 
 	if (document.readyState === 'loading') {

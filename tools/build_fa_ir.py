@@ -2,7 +2,10 @@
 """Extract all 'woopanel'-domain strings from plugin source and build pot/po/mo."""
 import re, sys, struct, pathlib
 
-ROOT = pathlib.Path('/root/woopanel')
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
 FILES = [ROOT / 'woopanel.php'] + sorted((ROOT / 'includes').glob('*.php'))
 
 CALL = re.compile(
@@ -53,16 +56,25 @@ TR = {
     'Add this shortcode to any page:': 'این شورت‌کد را در هر صفحه‌ای قرار دهید:',
     'Open a specific view:': 'باز کردن یک بخش مشخص:',
     'WooPanel requires WooCommerce to be installed and active.': 'ووپنل برای کار به نصب و فعال بودن ووکامرس نیاز دارد.',
+    'Customer Portal': 'پورتال مشتریان',
     'Light theme': 'تم روشن',
     'Panel appearance': 'ظاهر پنل',
     'System theme': 'تم سیستم',
     'Dark theme': 'تم تیره',
+    'Light': 'روشن',
+    'Auto': 'خودکار',
+    'Dark': 'تیره',
     'Tracking': 'رهگیری مرسوله',
     'Tracking code': 'کد رهگیری',
     'Copy': 'کپی',
+    'Copied!': 'کپی شد!',
     'Track shipment': 'رهگیری بسته',
     'Order %s': 'سفارش %s',
+    'Order #%s': 'سفارش شماره %s',
+    'Shipment for order %s is in transit': 'مرسوله‌ی سفارش %s در حال ارسال است',
     'No tracked shipments yet. You will see a tracking code here once your order is shipped.': 'هنوز مرسوله‌ای برای رهگیری نیست. پس از ارسال سفارش، کد رهگیری اینجا نمایش داده می‌شود.',
+    'No tracked shipments yet.': 'هنوز مرسوله‌ای برای رهگیری ثبت نشده است.',
+    'You will see a tracking code here once your order is shipped.': 'پس از ارسال سفارش، کد رهگیری در اینجا نمایش داده می‌شود.',
     # Navigation / shell
     'My Panel': 'پنل من',
     'Welcome, %s': 'خوش آمدید، %s',
@@ -81,15 +93,26 @@ TR = {
     'Total spent': 'مجموع خرید',
     'Average order': 'میانگین سفارش',
     'Available downloads': 'دانلودهای موجود',
+    'Total placed orders': 'کل سفارش‌های ثبت‌شده',
+    'Successful payments': 'پرداخت‌های موفق',
+    'Per purchase value': 'ارزش هر خرید',
+    'Digital assets': 'فایل‌ها و دارایی‌های دیجیتال',
     'Recent orders': 'سفارش‌های اخیر',
     'View all': 'مشاهده‌ی همه',
     'All': 'همه',
     # Orders
     'No orders found.': 'سفارشی یافت نشد.',
+    'You have not placed any orders yet. Visit our store to find what you need.': 'هنوز سفارشی ثبت نکرده‌اید. از فروشگاه دیدن کنید تا موارد دلخواه خود را بیابید.',
+    'Go to shop': 'رفتن به فروشگاه',
     'Order': 'سفارش',
     'Date': 'تاریخ',
     'Status': 'وضعیت',
     'Total': 'مجموع',
+    'Items': 'اقلام',
+    'Action': 'عملیات',
+    '%d item(s)': '%d قلم',
+    'View': 'مشاهده',
+    'Print invoice': 'چاپ فاکتور',
     'Order not found.': 'سفارشی یافت نشد.',
     'Back to orders': 'بازگشت به سفارش‌ها',
     'Product': 'محصول',
@@ -98,10 +121,12 @@ TR = {
     'Shipping': 'حمل و نقل',
     'Tax': 'مالیات',
     'Discount': 'تخفیف',
+    'Total amount': 'مبلغ کل',
     'Billing address': 'نشانی صورت‌حساب',
     'Shipping address': 'نشانی حمل و نقل',
     # Downloads
     'No downloads available yet.': 'هنوز فایلی برای دانلود ندارید.',
+    'When you purchase downloadable products, they will be listed here.': 'هنگامی که محصولات دانلودی خریداری کنید، در اینجا نمایش داده می‌شوند.',
     'Remaining: %s': 'باقی‌مانده: %s',
     'Expires: %s': 'انقضا: %s',
     'Download': 'دانلود',
