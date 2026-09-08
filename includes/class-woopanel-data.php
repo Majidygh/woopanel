@@ -127,12 +127,14 @@ class WooPanel_Data {
 	 */
 	public static function order_rows( $orders ) {
 		$rows = array();
+		$options     = woopanel_get_options();
+		$show_thumbs = ! empty( $options['show_item_thumbs'] );
 		foreach ( $orders as $order ) {
 			$status = $order->get_status();
 			$items_summary = array();
 			foreach ( $order->get_items() as $item ) {
 				$product = $item->get_product();
-				$thumb   = $product ? $product->get_image( array( 40, 40 ), array( 'class' => 'wpl-item-thumb', 'alt' => esc_attr( $item->get_name() ) ) ) : '';
+				$thumb   = ( $show_thumbs && $product ) ? $product->get_image( array( 40, 40 ), array( 'class' => 'wpl-item-thumb', 'alt' => esc_attr( $item->get_name() ) ) ) : '';
 				$items_summary[] = array(
 					'name'  => $item->get_name(),
 					'qty'   => $item->get_quantity(),
@@ -211,13 +213,16 @@ class WooPanel_Data {
 			if ( '' === $code || ! preg_match( '/^[A-Za-z0-9\-_]{6,32}$/', $code ) ) {
 				continue;
 			}
-			$rows[] = array(
+			$options = woopanel_get_options();
+			$tpl     = ! empty( $options['tracking_url'] ) ? $options['tracking_url'] : 'https://tracking.post.ir/?id=%s';
+			$url     = ( false !== strpos( $tpl, '%s' ) ) ? sprintf( $tpl, rawurlencode( $code ) ) : $tpl . rawurlencode( $code );
+			$rows[]  = array(
 				'order_id' => $order->get_id(),
 				'number'   => $order->get_order_number(),
 				'date'     => $order->get_date_created() ? $order->get_date_created()->date_i18n( get_option( 'date_format' ) ) : '',
 				'status'   => $order->get_status(),
 				'code'     => $code,
-				'url'      => 'https://tracking.post.ir/?id=' . rawurlencode( $code ),
+				'url'      => $url,
 			);
 		}
 		return apply_filters( 'woopanel_tracking_rows', $rows, $user_id );

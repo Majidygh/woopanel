@@ -93,6 +93,90 @@ class WooPanel_Admin {
 						</td>
 					</tr>
 					<tr>
+						<th scope="row"><?php esc_html_e( 'Layout width', 'woopanel' ); ?></th>
+						<td>
+							<fieldset>
+								<label style="display:block;margin-bottom:8px;">
+									<input type="radio" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[layout_mode]" value="full" <?php checked( $options['layout_mode'], 'full' ); ?>>
+									<strong><?php esc_html_e( 'Full-width (Screen wide - Recommended)', 'woopanel' ); ?></strong>
+									<span class="description" style="display:block;margin-right:20px;"><?php esc_html_e( 'The panel expands across the full screen width and gives your dashboard maximum breathing room without being squeezed by narrow theme containers.', 'woopanel' ); ?></span>
+								</label>
+								<label style="display:block;">
+									<input type="radio" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[layout_mode]" value="boxed" <?php checked( $options['layout_mode'], 'boxed' ); ?>>
+									<strong><?php esc_html_e( 'Boxed (Constrained to theme container)', 'woopanel' ); ?></strong>
+									<span class="description" style="display:block;margin-right:20px;"><?php esc_html_e( 'The panel remains confined inside your active WordPress theme content width.', 'woopanel' ); ?></span>
+								</label>
+							</fieldset>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="woopanel-default-theme"><?php esc_html_e( 'Default theme', 'woopanel' ); ?></label></th>
+						<td>
+							<select id="woopanel-default-theme" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[default_theme]">
+								<option value="system" <?php selected( $options['default_theme'], 'system' ); ?>><?php esc_html_e( 'Follow system theme', 'woopanel' ); ?></option>
+								<option value="light" <?php selected( $options['default_theme'], 'light' ); ?>><?php esc_html_e( 'Light theme', 'woopanel' ); ?></option>
+								<option value="dark" <?php selected( $options['default_theme'], 'dark' ); ?>><?php esc_html_e( 'Dark theme', 'woopanel' ); ?></option>
+							</select>
+							<p class="description"><?php esc_html_e( 'Default color mode before user selects their preference in the sidebar.', 'woopanel' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Corner radius', 'woopanel' ); ?></th>
+						<td>
+							<label style="margin-inline-end:16px;">
+								<input type="radio" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[radius_style]" value="rounded" <?php checked( $options['radius_style'], 'rounded' ); ?>>
+								<?php esc_html_e( 'Rounded (18px - Modern)', 'woopanel' ); ?>
+							</label>
+							<label style="margin-inline-end:16px;">
+								<input type="radio" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[radius_style]" value="smooth" <?php checked( $options['radius_style'], 'smooth' ); ?>>
+								<?php esc_html_e( 'Smooth (10px)', 'woopanel' ); ?>
+							</label>
+							<label>
+								<input type="radio" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[radius_style]" value="sharp" <?php checked( $options['radius_style'], 'sharp' ); ?>>
+								<?php esc_html_e( 'Sharp (4px)', 'woopanel' ); ?>
+							</label>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Dashboard stat cards', 'woopanel' ); ?></th>
+						<td>
+							<fieldset>
+								<label style="display:block;margin-bottom:6px;">
+									<input type="checkbox" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[show_card_orders]" value="1" <?php checked( ! empty( $options['show_card_orders'] ) ); ?>>
+									<?php esc_html_e( 'Show orders count', 'woopanel' ); ?>
+								</label>
+								<label style="display:block;margin-bottom:6px;">
+									<input type="checkbox" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[show_card_spent]" value="1" <?php checked( ! empty( $options['show_card_spent'] ) ); ?>>
+									<?php esc_html_e( 'Show total spent', 'woopanel' ); ?>
+								</label>
+								<label style="display:block;margin-bottom:6px;">
+									<input type="checkbox" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[show_card_avg]" value="1" <?php checked( ! empty( $options['show_card_avg'] ) ); ?>>
+									<?php esc_html_e( 'Show average order', 'woopanel' ); ?>
+								</label>
+								<label style="display:block;">
+									<input type="checkbox" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[show_card_downloads]" value="1" <?php checked( ! empty( $options['show_card_downloads'] ) ); ?>>
+									<?php esc_html_e( 'Show downloads count', 'woopanel' ); ?>
+								</label>
+							</fieldset>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Order items thumbnails', 'woopanel' ); ?></th>
+						<td>
+							<label>
+								<input type="checkbox" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[show_item_thumbs]" value="1" <?php checked( ! empty( $options['show_item_thumbs'] ) ); ?>>
+								<?php esc_html_e( 'Show product images in orders list and invoice', 'woopanel' ); ?>
+							</label>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="woopanel-tracking-url"><?php esc_html_e( 'Tracking URL template', 'woopanel' ); ?></label></th>
+						<td>
+							<input type="text" class="large-text" id="woopanel-tracking-url" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[tracking_url]" value="<?php echo esc_attr( $options['tracking_url'] ); ?>">
+							<p class="description"><?php esc_html_e( 'Use %s where the tracking barcode should be inserted. Defaults to Iran Post (https://tracking.post.ir/?id=%s).', 'woopanel' ); ?></p>
+						</td>
+					</tr>
+					<tr>
 						<th scope="row"><label for="woopanel-title"><?php esc_html_e( 'Panel title', 'woopanel' ); ?></label></th>
 						<td><input type="text" class="regular-text" id="woopanel-title" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[panel_title]" value="<?php echo esc_attr( $options['panel_title'] ); ?>"></td>
 					</tr>

@@ -109,10 +109,10 @@ def template(content, theme="light", active_nav="dashboard", is_mobile=False):
             </div>
 
             <div class="wpl-usercard">
-                <div class="wpl-usercard__avatar" aria-hidden="true">م</div>
+                <div class="wpl-usercard__avatar" aria-hidden="true">ک</div>
                 <div class="wpl-usercard__info">
-                    <span class="wpl-usercard__name">مجید یوسفی</span>
-                    <span class="wpl-usercard__email">majidygh7@gmail.com</span>
+                    <span class="wpl-usercard__name">کاربر گرامی</span>
+                    <span class="wpl-usercard__email">user@example.com</span>
                 </div>
                 <a href="#" class="wpl-usercard__logout" title="خروج">
                     {icon('logout', 16)}
@@ -169,9 +169,9 @@ DASHBOARD_CONTENT = f'''
 
 <div class="wpl-welcome-card">
     <div class="wpl-welcome-card__content">
-        <div class="wpl-welcome-card__avatar" aria-hidden="true">م</div>
+        <div class="wpl-welcome-card__avatar" aria-hidden="true">ک</div>
         <div class="wpl-welcome-card__text">
-            <h3 class="wpl-welcome-card__greeting">سلام، مجید یوسفی 👋</h3>
+            <h3 class="wpl-welcome-card__greeting">سلام، کاربر گرامی 👋</h3>
             <p class="wpl-welcome-card__sub">خلاصه‌ای از سفارش‌ها و وضعیت حساب کاربری شما.</p>
         </div>
     </div>
@@ -193,7 +193,7 @@ DASHBOARD_CONTENT = f'''
         </div>
     </div>
     <div class="wpl-track-banner__actions">
-        <button type="button" class="wpl-btn wpl-btn--ghost wpl-btn--xs">
+        <button type="button" class="wpl-btn wpl-btn--xs">
             {icon('copy', 14)}
             <span>کپی</span>
         </button>
@@ -452,7 +452,7 @@ ORDER_DETAIL_CONTENT = f'''
             </div>
         </div>
         <div class="wpl-track-banner__actions">
-            <button type="button" class="wpl-btn wpl-btn--ghost wpl-btn--xs">{icon('copy', 14)} <span>کپی</span></button>
+            <button type="button" class="wpl-btn wpl-btn--xs">{icon('copy', 14)} <span>کپی</span></button>
             <a href="#" class="wpl-btn wpl-btn--xs">{icon('external', 14)} <span>رهگیری در سامانه پست</span></a>
         </div>
     </div>

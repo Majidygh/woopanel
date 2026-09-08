@@ -135,9 +135,22 @@ class WooPanel_Render {
 		$msg     = isset( $_GET['woopanel_msg'] ) ? sanitize_key( wp_unslash( $_GET['woopanel_msg'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only notice code.
 		$notice  = $msg ? woopanel_notice_for( $msg ) : array( 'info', '' );
 
+		$layout_mode   = isset( $options['layout_mode'] ) ? $options['layout_mode'] : 'full';
+		$radius_style  = isset( $options['radius_style'] ) ? $options['radius_style'] : 'rounded';
+		$default_theme = isset( $options['default_theme'] ) ? $options['default_theme'] : 'system';
+		$panel_classes = array(
+			'wpl-panel',
+			'wpl-panel--' . sanitize_html_class( $context ),
+			'wpl-panel--layout-' . sanitize_html_class( $layout_mode ),
+			'wpl-panel--radius-' . sanitize_html_class( $radius_style ),
+		);
+		if ( 'full' === $layout_mode ) {
+			$panel_classes[] = 'wpl-panel--full-width';
+		}
+
 		ob_start();
 		?>
-		<div class="wpl-panel wpl-panel--<?php echo esc_attr( $context ); ?>" data-woopanel>
+		<div class="<?php echo esc_attr( implode( ' ', $panel_classes ) ); ?>" data-woopanel data-wpl-layout="<?php echo esc_attr( $layout_mode ); ?>" data-wpl-radius="<?php echo esc_attr( $radius_style ); ?>" data-wpl-default-theme="<?php echo esc_attr( $default_theme ); ?>">
 			<div class="wpl-shell">
 				<?php self::sidebar( $view, $user, $options, $user_id ); ?>
 				<main class="wpl-main">
@@ -304,32 +317,39 @@ class WooPanel_Render {
 		$tracking = WooPanel_Data::get_tracking( $user_id, 1 );
 		$display  = $user ? ( $user->display_name ? $user->display_name : $user->user_login ) : '';
 
-		$cards = array(
-			array(
+		$cards = array();
+		if ( ! empty( $options['show_card_orders'] ) ) {
+			$cards[] = array(
 				'icon'  => 'bag',
 				'label' => __( 'Orders', 'woopanel' ),
 				'value' => number_format_i18n( $stats['orders_count'] ),
 				'hint'  => __( 'Total placed orders', 'woopanel' ),
-			),
-			array(
+			);
+		}
+		if ( ! empty( $options['show_card_spent'] ) ) {
+			$cards[] = array(
 				'icon'  => 'wallet',
 				'label' => __( 'Total spent', 'woopanel' ),
 				'value' => function_exists( 'wc_price' ) ? wc_price( $stats['total_spent'] ) : $stats['total_spent'],
 				'hint'  => __( 'Successful payments', 'woopanel' ),
-			),
-			array(
+			);
+		}
+		if ( ! empty( $options['show_card_avg'] ) ) {
+			$cards[] = array(
 				'icon'  => 'card',
 				'label' => __( 'Average order', 'woopanel' ),
 				'value' => function_exists( 'wc_price' ) ? wc_price( $stats['avg_order'] ) : $stats['avg_order'],
 				'hint'  => __( 'Per purchase value', 'woopanel' ),
-			),
-			array(
+			);
+		}
+		if ( ! empty( $options['show_card_downloads'] ) ) {
+			$cards[] = array(
 				'icon'  => 'file',
 				'label' => __( 'Available downloads', 'woopanel' ),
 				'value' => number_format_i18n( $stats['downloads'] ),
 				'hint'  => __( 'Digital assets', 'woopanel' ),
-			),
-		);
+			);
+		}
 
 		ob_start();
 		?>
@@ -368,7 +388,7 @@ class WooPanel_Render {
 					</div>
 				</div>
 				<div class="wpl-track-banner__actions">
-					<button type="button" class="wpl-btn wpl-btn--ghost wpl-btn--xs wpl-copycode" data-wpl-copy="<?php echo esc_attr( $track['code'] ); ?>">
+					<button type="button" class="wpl-btn wpl-btn--xs wpl-copycode" data-wpl-copy="<?php echo esc_attr( $track['code'] ); ?>">
 						<?php echo woopanel_icon( 'copy', 14 ); // phpcs:ignore WordPress.Security.EscapeOutput ?> <span class="wpl-copy-text" data-done-text="<?php esc_attr_e( 'Copied!', 'woopanel' ); ?>"><?php esc_html_e( 'Copy', 'woopanel' ); ?></span>
 					</button>
 					<a class="wpl-btn wpl-btn--xs" href="<?php echo esc_url( $track['url'] ); ?>" target="_blank" rel="noopener">
@@ -617,10 +637,14 @@ class WooPanel_Render {
 					<code class="wpl-trackcard__code" dir="ltr"><?php echo woopanel_keep_latin( $code ); // phpcs:ignore WordPress.Security.EscapeOutput ?></code>
 				</div>
 				<div class="wpl-trackcard__actions">
-					<button type="button" class="wpl-btn wpl-btn--ghost wpl-btn--sm wpl-copycode" data-wpl-copy="<?php echo esc_attr( $code ); ?>">
+					<button type="button" class="wpl-btn wpl-btn--sm wpl-copycode" data-wpl-copy="<?php echo esc_attr( $code ); ?>">
 						<?php echo woopanel_icon( 'copy', 14 ); // phpcs:ignore WordPress.Security.EscapeOutput ?> <span class="wpl-copy-text" data-done-text="<?php esc_attr_e( 'Copied!', 'woopanel' ); ?>"><?php esc_html_e( 'Copy', 'woopanel' ); ?></span>
 					</button>
-					<a class="wpl-btn wpl-btn--sm wpl-trackcard__go" href="<?php echo esc_url( 'https://tracking.post.ir/?id=' . rawurlencode( $code ) ); ?>" target="_blank" rel="noopener">
+					<?php
+					$tpl       = ! empty( $options['tracking_url'] ) ? $options['tracking_url'] : 'https://tracking.post.ir/?id=%s';
+					$track_url = ( false !== strpos( $tpl, '%s' ) ) ? sprintf( $tpl, rawurlencode( $code ) ) : $tpl . rawurlencode( $code );
+					?>
+					<a class="wpl-btn wpl-btn--sm wpl-trackcard__go" href="<?php echo esc_url( $track_url ); ?>" target="_blank" rel="noopener">
 						<?php echo woopanel_icon( 'external', 14 ); // phpcs:ignore WordPress.Security.EscapeOutput ?> <span><?php esc_html_e( 'Track shipment', 'woopanel' ); ?></span>
 					</a>
 				</div>
@@ -795,7 +819,7 @@ class WooPanel_Render {
 						</div>
 					</div>
 					<div class="wpl-trackcard__actions">
-						<button type="button" class="wpl-btn wpl-btn--ghost wpl-btn--sm wpl-copycode" data-wpl-copy="<?php echo esc_attr( $row['code'] ); ?>">
+						<button type="button" class="wpl-btn wpl-btn--sm wpl-copycode" data-wpl-copy="<?php echo esc_attr( $row['code'] ); ?>">
 							<?php echo woopanel_icon( 'copy', 14 ); // phpcs:ignore WordPress.Security.EscapeOutput ?> <span class="wpl-copy-text" data-done-text="<?php esc_attr_e( 'Copied!', 'woopanel' ); ?>"><?php esc_html_e( 'Copy', 'woopanel' ); ?></span>
 						</button>
 						<a class="wpl-btn wpl-btn--sm wpl-trackcard__go" href="<?php echo esc_url( $row['url'] ); ?>" target="_blank" rel="noopener">

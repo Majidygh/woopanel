@@ -53,6 +53,75 @@ msgstr "پس‌زمینه‌ی رنگ اصلی"
 msgid "Soft background tint for icon chips and hero."
 msgstr "رنگ ملایم پس‌زمینه برای آیکون‌ها و بنر خوش‌آمد."
 
+msgid "Layout width"
+msgstr "عرض و چیدمان پنل"
+
+msgid "Full-width (Screen wide - Recommended)"
+msgstr "تمام‌عرض (گسترده در کل عرض نمایشگر — پیشنهادی)"
+
+msgid "The panel expands across the full screen width and gives your dashboard maximum breathing room without being squeezed by narrow theme containers."
+msgstr "پنل در تمام پهنای نمایشگر گسترده می‌شود و فضای کافی برای نمایش بدون فشردگی فراهم می‌کند."
+
+msgid "Boxed (Constrained to theme container)"
+msgstr "داخل کادر (محدود به کانتینر قالب)"
+
+msgid "The panel remains confined inside your active WordPress theme content width."
+msgstr "پنل درون عرض استاندارد محتوای قالب سایت شما باقی می‌ماند."
+
+msgid "Default theme"
+msgstr "تم پیش‌فرض پنل"
+
+msgid "Follow system theme"
+msgstr "هماهنگ با تم سیستم"
+
+msgid "Light theme"
+msgstr "تم روشن"
+
+msgid "Dark theme"
+msgstr "تم تیره"
+
+msgid "Default color mode before user selects their preference in the sidebar."
+msgstr "حالت رنگ اولیه پیش از انتخاب ترجیح توسط کاربر در سایدبار."
+
+msgid "Corner radius"
+msgstr "انحنای گوشه‌ها"
+
+msgid "Rounded (18px - Modern)"
+msgstr "گرد مدرن (۱۸ پیکسل)"
+
+msgid "Smooth (10px)"
+msgstr "ملایم (۱۰ پیکسل)"
+
+msgid "Sharp (4px)"
+msgstr "تیز و صنعتی (۴ پیکسل)"
+
+msgid "Dashboard stat cards"
+msgstr "کارت‌های آماری پیشخوان"
+
+msgid "Show orders count"
+msgstr "نمایش تعداد سفارش‌ها"
+
+msgid "Show total spent"
+msgstr "نمایش مجموع خرید"
+
+msgid "Show average order"
+msgstr "نمایش میانگین سفارش"
+
+msgid "Show downloads count"
+msgstr "نمایش تعداد فایل‌های دانلودی"
+
+msgid "Order items thumbnails"
+msgstr "پیش‌نمایش کالاهای سفارش"
+
+msgid "Show product images in orders list and invoice"
+msgstr "نمایش تصویر بندانگشتی محصولات در جدول سفارشات و فاکتور"
+
+msgid "Tracking URL template"
+msgstr "الگوی آدرس رهگیری مرسوله"
+
+msgid "Use %s where the tracking barcode should be inserted. Defaults to Iran Post (https://tracking.post.ir/?id=%s)."
+msgstr "از %s در جایی که کد رهگیری قرار می‌گیرد استفاده کنید. پیش‌فرض: سامانه رهگیری پست (https://tracking.post.ir/?id=%s)."
+
 msgid "Panel title"
 msgstr "عنوان پنل"
 
@@ -113,9 +182,6 @@ msgstr "پورتال مشتریان"
 msgid "Panel appearance"
 msgstr "ظاهر پنل"
 
-msgid "Light theme"
-msgstr "تم روشن"
-
 msgid "Light"
 msgstr "روشن"
 
@@ -124,9 +190,6 @@ msgstr "تم سیستم"
 
 msgid "Auto"
 msgstr "خودکار"
-
-msgid "Dark theme"
-msgstr "تم تیره"
 
 msgid "Dark"
 msgstr "تیره"

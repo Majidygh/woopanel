@@ -138,7 +138,7 @@ add_filter( 'woopanel_tracking_rows', function( $rows, $user_id ) {
 ## لایسنس
 
 این پروژه تحت لایسنس **[GPL-2.0-or-later](LICENSE)** منتشر شده است.  
-توسعه‌داده‌شده توسط **[مجید یوسفی](https://github.com/Majidygh)**.
+توسعه‌داده‌شده تحت مجوز گنو · [مخزن گیت‌هاب](https://github.com/Majidygh/woopanel).
 
 </div>
 

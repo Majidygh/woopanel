@@ -26,12 +26,21 @@ class WooPanel_Options {
 		 * even after the options row was first written under another locale.
 		 */
 		return array(
-			'accent'            => '#7c3aed',
-			'accent_bg'         => '#f5f3ff',
-			'replace_dashboard' => 1,
-			'orders_per_page'   => 8,
-			'panel_title'       => '',
-			'welcome_text'      => '',
+			'accent'              => '#7c3aed',
+			'accent_bg'           => '#f5f3ff',
+			'replace_dashboard'   => 1,
+			'layout_mode'         => 'full',
+			'default_theme'       => 'system',
+			'radius_style'        => 'rounded',
+			'show_card_orders'    => 1,
+			'show_card_spent'     => 1,
+			'show_card_avg'       => 1,
+			'show_card_downloads' => 1,
+			'show_item_thumbs'    => 1,
+			'tracking_url'        => 'https://tracking.post.ir/?id=%s',
+			'orders_per_page'     => 8,
+			'panel_title'         => '',
+			'welcome_text'        => '',
 		);
 	}
 
@@ -143,7 +152,25 @@ class WooPanel_Options {
 					$out[ $key ] = WooPanel_Render::sanitize_hex_color( $input[ $key ], $default );
 					break;
 				case 'replace_dashboard':
+				case 'show_card_orders':
+				case 'show_card_spent':
+				case 'show_card_avg':
+				case 'show_card_downloads':
+				case 'show_item_thumbs':
 					$out[ $key ] = empty( $input[ $key ] ) ? 0 : 1;
+					break;
+				case 'layout_mode':
+					$out[ $key ] = in_array( $input[ $key ], array( 'full', 'boxed' ), true ) ? $input[ $key ] : 'full';
+					break;
+				case 'default_theme':
+					$out[ $key ] = in_array( $input[ $key ], array( 'system', 'light', 'dark' ), true ) ? $input[ $key ] : 'system';
+					break;
+				case 'radius_style':
+					$out[ $key ] = in_array( $input[ $key ], array( 'rounded', 'smooth', 'sharp' ), true ) ? $input[ $key ] : 'rounded';
+					break;
+				case 'tracking_url':
+					$val = esc_url_raw( trim( (string) $input[ $key ] ) );
+					$out[ $key ] = ( '' !== $val ) ? $val : 'https://tracking.post.ir/?id=%s';
 					break;
 				case 'orders_per_page':
 					$out[ $key ] = min( 50, max( 1, absint( $input[ $key ] ) ) );

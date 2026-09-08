@@ -138,6 +138,9 @@ class WooPanel_Takeover {
 		if ( ! function_exists( 'is_account_page' ) || ! is_account_page() || ! is_user_logged_in() ) {
 			return;
 		}
+		$options     = woopanel_get_options();
+		$layout_mode = isset( $options['layout_mode'] ) ? $options['layout_mode'] : 'full';
+
 		// Sidebar classes verified against core Woo + Woodmart (wd-my-account-
 		// sidebar per xtemos docs), Flatsome, Astra, Divi, OceanWP.
 		$css = '.woocommerce-account .woocommerce-MyAccount-navigation,'
@@ -154,6 +157,13 @@ class WooPanel_Takeover {
 			. '.wpl-panel .wpl-theme{display:inline-flex!important;visibility:visible!important;opacity:1!important}'
 			. '.wpl-panel .wpl-theme__btn{display:grid!important;visibility:visible!important}'
 			. '.wpl-panel .wpl-theme__btn svg{display:block!important;width:16px!important;height:16px!important}';
+
+		if ( 'full' === $layout_mode ) {
+			$css .= 'body.woocommerce-account{overflow-x:clip!important}'
+				. '.wpl-panel--takeover{width:100vw!important;max-width:100vw!important;margin-inline:calc(50% - 50vw)!important;border-radius:0!important;box-shadow:none!important;border-inline:0!important}'
+				. '.wpl-panel--takeover .wpl-shell{min-height:calc(100vh - 120px);max-width:1600px;margin-inline:auto;width:100%}';
+		}
+
 		$css = apply_filters( 'woopanel_takeover_css', $css );
 		wp_add_inline_style( 'woopanel', $css );
 	}
