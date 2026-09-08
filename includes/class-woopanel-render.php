@@ -19,7 +19,7 @@ class WooPanel_Render {
 	 * @param string $default Fallback.
 	 * @return string
 	 */
-	public static function sanitize_hex_color( $color, $default = '#0d7a6f' ) {
+	public static function sanitize_hex_color( $color, $default = '#7c3aed' ) {
 		$color = is_string( $color ) ? trim( $color ) : '';
 		if ( preg_match( '/^#([A-Fa-f0-9]{3})$/', $color ) ) {
 			// Expand shorthand (#abc -> #aabbcc) so fixed-offset RGB parsing stays valid.
@@ -42,18 +42,8 @@ class WooPanel_Render {
 		wp_style_add_data( 'woopanel', 'rtl', 'replace' );
 
 		$options = woopanel_get_options();
-		$accent  = self::sanitize_hex_color( $options['accent'], '#0d7a6f' );
-		$bg      = self::sanitize_hex_color( $options['accent_bg'], '#e4f2ef' );
-
-		// "Follow the site theme" — resolve the store's own brand color.
-		$auto = ( isset( $options['accent_mode'] ) && 'auto' === $options['accent_mode'] );
-		if ( $auto ) {
-			$site = function_exists( 'woopanel_site_accent' ) ? woopanel_site_accent() : false;
-			if ( $site && preg_match( '/^#[0-9a-f]{6}$/i', $site ) ) {
-				$accent = $site;
-				$bg     = woopanel_derive_soft( $site );
-			}
-		}
+		$accent  = self::sanitize_hex_color( $options['accent'], '#7c3aed' );
+		$bg      = self::sanitize_hex_color( $options['accent_bg'], '#f5f3ff' );
 
 		$css = sprintf(
 			'.wpl-panel{--wpl-accent:%1$s;--wpl-accent-soft:%2$s;--wpl-accent-rgb:%3$d %4$d %5$d;}',
@@ -137,10 +127,9 @@ class WooPanel_Render {
 		$msg     = isset( $_GET['woopanel_msg'] ) ? sanitize_key( wp_unslash( $_GET['woopanel_msg'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only notice code.
 		$notice  = $msg ? woopanel_notice_for( $msg ) : array( 'info', '' );
 
-		$auto_attr = ( isset( $options['accent_mode'] ) && 'auto' === $options['accent_mode'] ) ? ' data-wpl-auto-accent="1"' : '';
 		ob_start();
 		?>
-		<div class="wpl-panel wpl-panel--<?php echo esc_attr( $context ); ?>" data-woopanel<?php echo $auto_attr; // phpcs:ignore WordPress.Security.EscapeOutput -- static attribute. ?>>
+		<div class="wpl-panel wpl-panel--<?php echo esc_attr( $context ); ?>" data-woopanel>
 			<div class="wpl-shell">
 				<?php self::sidebar( $view, $user, $options ); ?>
 				<main class="wpl-main">
@@ -155,11 +144,6 @@ class WooPanel_Render {
 						}
 						?>
 						</h2>
-						<div class="wpl-theme" data-wpl-theme>
-							<button type="button" class="wpl-theme__btn" data-wpl-theme-set="light" aria-label="<?php esc_attr_e( 'Light theme', 'woopanel' ); ?>"><?php echo woopanel_icon( 'sun', 16 ); // phpcs:ignore WordPress.Security.EscapeOutput ?></button>
-							<button type="button" class="wpl-theme__btn" data-wpl-theme-set="system" aria-label="<?php esc_attr_e( 'System theme', 'woopanel' ); ?>"><?php echo woopanel_icon( 'monitor', 16 ); // phpcs:ignore WordPress.Security.EscapeOutput ?></button>
-							<button type="button" class="wpl-theme__btn" data-wpl-theme-set="dark" aria-label="<?php esc_attr_e( 'Dark theme', 'woopanel' ); ?>"><?php echo woopanel_icon( 'moon', 16 ); // phpcs:ignore WordPress.Security.EscapeOutput ?></button>
-						</div>
 					</div>
 
 					<?php if ( '' !== $notice[1] ) : ?>
@@ -190,6 +174,11 @@ class WooPanel_Render {
 		$display = $user ? ( $user->display_name ? $user->display_name : $user->user_login ) : '';
 		?>
 		<aside class="wpl-sidebar">
+			<div class="wpl-theme" data-wpl-theme role="group" aria-label="<?php esc_attr_e( 'Panel appearance', 'woopanel' ); ?>">
+				<button type="button" class="wpl-theme__btn" data-wpl-theme-set="light" aria-label="<?php esc_attr_e( 'Light theme', 'woopanel' ); ?>"><?php echo woopanel_icon( 'sun', 16 ); // phpcs:ignore WordPress.Security.EscapeOutput ?></button>
+				<button type="button" class="wpl-theme__btn" data-wpl-theme-set="system" aria-label="<?php esc_attr_e( 'System theme', 'woopanel' ); ?>"><?php echo woopanel_icon( 'monitor', 16 ); // phpcs:ignore WordPress.Security.EscapeOutput ?></button>
+				<button type="button" class="wpl-theme__btn" data-wpl-theme-set="dark" aria-label="<?php esc_attr_e( 'Dark theme', 'woopanel' ); ?>"><?php echo woopanel_icon( 'moon', 16 ); // phpcs:ignore WordPress.Security.EscapeOutput ?></button>
+			</div>
 			<div class="wpl-brand">
 				<div class="wpl-brand__logo" aria-hidden="true"><?php echo esc_html( mb_substr( trim( (string) $options['panel_title'] ), 0, 1, 'UTF-8' ) ?: 'W' ); ?></div>
 				<div class="wpl-brand__text">

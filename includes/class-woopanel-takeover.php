@@ -127,7 +127,8 @@ class WooPanel_Takeover {
 	}
 
 	/**
-	 * CSS that suppresses the theme/Woo account sidebar on account pages.
+	 * CSS that suppresses the theme/Woo account sidebar and stretches the
+	 * panel across the full page on account pages.
 	 *
 	 * @return void
 	 */
@@ -135,8 +136,27 @@ class WooPanel_Takeover {
 		if ( ! function_exists( 'is_account_page' ) || ! is_account_page() || ! is_user_logged_in() ) {
 			return;
 		}
-		$css = '.woocommerce-MyAccount-navigation,.woodmart-account-navigation,.wd-account-navigation,.account-navigation,'
-			. '.et_myaccount__navigation,.flatsome-account-sidebar,.astra-woocommerce-account-sidebar{display:none!important}';
+		// Sidebar classes verified against core Woo + Woodmart (wd-my-account-
+		// sidebar per xtemos docs), Flatsome, Astra, Divi, OceanWP.
+		$css = '.woocommerce-account .woocommerce-MyAccount-navigation,'
+			. '.woocommerce-account .wd-my-account-sidebar,.woocommerce-account .woodmart-my-account-sidebar,'
+			. '.woocommerce-account .woodmart-account-navigation,.woocommerce-account .wd-account-navigation,'
+			. '.woocommerce-account .account-sidebar,.woocommerce-account .et_myaccount__navigation,'
+			. '.woocommerce-account .flatsome-account-sidebar,.woocommerce-account .astra-woocommerce-account-sidebar,'
+			. '.woocommerce-account .oceanwp-account-navigation-sidebar{display:none!important}'
+			// Let the content column take everything the sidebar left behind.
+			. '.woocommerce-account .woocommerce-MyAccount-content{width:100%!important;max-width:100%!important;flex:1 1 100%!important}'
+			// Full-bleed the panel past the theme's content container.
+			. 'body.woocommerce-account{overflow-x:clip}'
+			. '.wpl-panel--takeover{width:100vw;max-width:100vw;margin-inline:calc(50% - 50vw);border-radius:0;box-shadow:none}'
+			. '.wpl-panel--takeover .wpl-shell{min-height:calc(100vh - 120px)}'
+			// Theme page titles ("My account") duplicate the panel header.
+			. '.woocommerce-account .entry-title,.woocommerce-account .page-title,.woocommerce-account .wp-block-post-title,.woocommerce-account .woodmart-title-container{display:none!important}'
+			// Theme resets (button/svg display rules) must not eat the switcher.
+			. '.wpl-panel .wpl-theme{display:inline-flex!important;visibility:visible!important;opacity:1!important}'
+			. '.wpl-panel .wpl-theme__btn{display:grid!important;visibility:visible!important}'
+			. '.wpl-panel .wpl-theme__btn svg{display:block!important;width:16px!important;height:16px!important}';
+		$css = apply_filters( 'woopanel_takeover_css', $css );
 		wp_add_inline_style( 'woopanel', $css );
 	}
 }

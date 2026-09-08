@@ -54,6 +54,7 @@ TR = {
     'Open a specific view:': 'باز کردن یک بخش مشخص:',
     'WooPanel requires WooCommerce to be installed and active.': 'ووپنل برای کار به نصب و فعال بودن ووکامرس نیاز دارد.',
     'Light theme': 'تم روشن',
+    'Panel appearance': 'ظاهر پنل',
     'System theme': 'تم سیستم',
     'Dark theme': 'تم تیره',
     # Navigation / shell

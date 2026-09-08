@@ -61,30 +61,6 @@ class WooPanel_Admin {
 				<?php settings_fields( 'woopanel' ); ?>
 				<table class="form-table" role="presentation">
 					<tr>
-						<th scope="row"><?php esc_html_e( 'Color mode', 'woopanel' ); ?></th>
-						<td>
-							<fieldset>
-								<label style="display:block;margin-bottom:6px;">
-									<input type="radio" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[accent_mode]" value="auto" <?php checked( 'auto', $options['accent_mode'] ); ?>>
-									<strong><?php esc_html_e( 'Follow the site theme', 'woopanel' ); ?></strong>
-									<span class="description"> — <?php
-										$detected = function_exists( 'woopanel_site_accent' ) ? woopanel_site_accent() : false;
-										if ( $detected ) {
-											printf( esc_html__( 'Detected: %s', 'woopanel' ), '<code>' . esc_html( $detected ) . '</code>' );
-										} else {
-											esc_html_e( 'No brand color found in the theme — the custom color below will be used instead.', 'woopanel' );
-										}
-									?></span>
-								</label>
-								<label style="display:block;">
-									<input type="radio" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[accent_mode]" value="custom" <?php checked( 'custom', $options['accent_mode'] ); ?>>
-									<strong><?php esc_html_e( 'Custom colors', 'woopanel' ); ?></strong>
-								</label>
-							</fieldset>
-							<p class="description" style="margin-top:8px;"><?php esc_html_e( 'In "follow" mode the panel reads your theme\'s palette server-side and, in the browser, the real rendered colors of your header and buttons — so the panel always matches the shop.', 'woopanel' ); ?></p>
-						</td>
-					</tr>
-					<tr>
 						<th scope="row"><label for="woopanel-accent"><?php esc_html_e( 'Accent color', 'woopanel' ); ?></label></th>
 						<td>
 							<input type="color" id="woopanel-accent" name="<?php echo esc_attr( WooPanel_Options::OPTION_KEY ); ?>[accent]" value="<?php echo esc_attr( $options['accent'] ); ?>">

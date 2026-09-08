@@ -3,7 +3,7 @@
  * Plugin Name:       WooPanel
  * Plugin URI:        https://github.com/Majidygh/woopanel
  * Description:       Modern user dashboard for WooCommerce — orders, downloads, addresses and account settings in one clean panel. RTL-ready, dark mode, zero build step.
- * Version:           1.4.0
+ * Version:           1.5.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            majidygh
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'WOOPANEL_VERSION', '1.4.0' );
+define( 'WOOPANEL_VERSION', '1.5.0' );
 define( 'WOOPANEL_FILE', __FILE__ );
 define( 'WOOPANEL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WOOPANEL_URL', plugin_dir_url( __FILE__ ) );

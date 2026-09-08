@@ -14,24 +14,6 @@ msgstr "ووپنل"
 msgid "WooCommerce is not active. WooPanel needs WooCommerce to display customer data."
 msgstr "ووکامرس فعال نیست. ووپنل برای نمایش داده‌های مشتری به ووکامرس نیاز دارد."
 
-msgid "Color mode"
-msgstr "حالت رنگ"
-
-msgid "Follow the site theme"
-msgstr "هماهنگ با تم سایت"
-
-msgid "Detected: %s"
-msgstr "شناسایی‌شده: %s"
-
-msgid "No brand color found in the theme — the custom color below will be used instead."
-msgstr "رنگ برندی در قالب پیدا نشد — رنگ دلخواهِ زیر به‌جای آن به کار می‌رود."
-
-msgid "Custom colors"
-msgstr "رنگ‌های دلخواه"
-
-msgid "In \"follow\" mode the panel reads your theme's palette server-side and, in the browser, the real rendered colors of your header and buttons — so the panel always matches the shop."
-msgstr "در حالت «هماهنگ»، پنل پالت قالب را سمت سرور و رنگ‌های واقعیِ رندرشده‌ی سربرگ و دکمه‌ها را در مرورگر می‌خواند — پنل همیشه با فروشگاه ست می‌شود."
-
 msgid "Accent color"
 msgstr "رنگ اصلی"
 
@@ -122,6 +104,12 @@ msgstr "سلام"
 msgid "WooPanel requires WooCommerce to be installed and active."
 msgstr "ووپنل برای کار به نصب و فعال بودن ووکامرس نیاز دارد."
 
+msgid "Welcome, %s"
+msgstr "خوش آمدید، %s"
+
+msgid "Panel appearance"
+msgstr "ظاهر پنل"
+
 msgid "Light theme"
 msgstr "تم روشن"
 
@@ -130,9 +118,6 @@ msgstr "تم سیستم"
 
 msgid "Dark theme"
 msgstr "تم تیره"
-
-msgid "Welcome, %s"
-msgstr "خوش آمدید، %s"
 
 msgid "Log out"
 msgstr "خروج"
