@@ -234,9 +234,30 @@ class WooPanel_Data {
 			array( 'slug' => 'account',   'label' => __( 'Account', 'woopanel' ),   'icon' => 'user' ),
 		);
 
+		// In takeover mode on the real My Account page, link to Woo's own
+		// endpoint URLs (/my-account/orders/) so the address bar, browser
+		// history and order-email links all agree with the panel nav.
+		$takeover = class_exists( 'WooPanel_Takeover' )
+			&& WooPanel_Takeover::active()
+			&& function_exists( 'is_account_page' )
+			&& is_account_page()
+			&& function_exists( 'wc_get_account_endpoint_url' );
+		$endpoints = array(
+			'dashboard' => false,
+			'orders'    => 'orders',
+			'downloads' => 'downloads',
+			'address'   => 'edit-address',
+			'account'   => 'edit-account',
+		);
+
 		foreach ( $items as $i => $item ) {
 			$items[ $i ]['active'] = ( $item['slug'] === $current );
-			$items[ $i ]['url']    = woopanel_panel_url( array( 'woopanel_view' => $item['slug'] ) );
+			if ( $takeover ) {
+				$ep              = $endpoints[ $item['slug'] ];
+				$items[ $i ]['url'] = false === $ep ? wc_get_account_endpoint_url( 'dashboard' ) : wc_get_account_endpoint_url( $ep );
+			} else {
+				$items[ $i ]['url'] = woopanel_panel_url( array( 'woopanel_view' => $item['slug'] ) );
+			}
 		}
 		return $items;
 	}

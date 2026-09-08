@@ -14,11 +14,56 @@ msgstr "ووپنل"
 msgid "WooCommerce is not active. WooPanel needs WooCommerce to display customer data."
 msgstr "ووکامرس فعال نیست. ووپنل برای نمایش داده‌های مشتری به ووکامرس نیاز دارد."
 
+msgid "Color mode"
+msgstr "حالت رنگ"
+
+msgid "Follow the site theme"
+msgstr "هماهنگ با تم سایت"
+
+msgid "Detected: %s"
+msgstr "شناسایی‌شده: %s"
+
+msgid "No brand color found in the theme — the custom color below will be used instead."
+msgstr "رنگ برندی در قالب پیدا نشد — رنگ دلخواهِ زیر به‌جای آن به کار می‌رود."
+
+msgid "Custom colors"
+msgstr "رنگ‌های دلخواه"
+
+msgid "In \"follow\" mode the panel reads your theme's palette server-side and, in the browser, the real rendered colors of your header and buttons — so the panel always matches the shop."
+msgstr "در حالت «هماهنگ»، پنل پالت قالب را سمت سرور و رنگ‌های واقعیِ رندرشده‌ی سربرگ و دکمه‌ها را در مرورگر می‌خواند — پنل همیشه با فروشگاه ست می‌شود."
+
 msgid "Accent color"
 msgstr "رنگ اصلی"
 
 msgid "Used for buttons, links and active states."
 msgstr "برای دکمه‌ها، لینک‌ها و حالت‌های فعال به کار می‌رود."
+
+msgid "Royal violet"
+msgstr "بنفش شاهانه"
+
+msgid "Persian turquoise"
+msgstr "فیروزه‌ی ایرانی"
+
+msgid "Caspian blue"
+msgstr "آبی خزر"
+
+msgid "Saffron"
+msgstr "زعفران"
+
+msgid "Pomegranate"
+msgstr "انار"
+
+msgid "Forest"
+msgstr "جنگل"
+
+msgid "Midnight"
+msgstr "نیمه‌شب"
+
+msgid "Wine"
+msgstr "شرابی"
+
+msgid "One-click palettes. The soft background tint adjusts automatically."
+msgstr "پالت‌های آماده با یک کلیک. رنگ ملایم پس‌زمینه خودکار تنظیم می‌شود."
 
 msgid "Accent background"
 msgstr "پس‌زمینه‌ی رنگ اصلی"
@@ -41,8 +86,8 @@ msgstr "تعداد سفارش در هر صفحه"
 msgid "My Account integration"
 msgstr "یکپارچگی با «حساب کاربری»"
 
-msgid "Replace the default WooCommerce My Account dashboard area with WooPanel (endpoints keep working)."
-msgstr "بخش پیشخوان صفحه‌ی «حساب کاربری» ووکامرس با ووپنل جایگزین می‌شود (بخش‌های دیگر سر جای خود کار می‌کنند)."
+msgid "Replace the WooCommerce My Account area with WooPanel (on by default). Orders, downloads, addresses and account pages all render the panel; theme side-menus are hidden automatically."
+msgstr "ناحیه‌ی «حساب کاربری» ووکامرس با ووپنل جایگزین می‌شود (روشن پیش‌فرض). سفارش‌ها، دانلودها، نشانی‌ها و اطلاعات حساب همه با پنل نمایش داده می‌شوند و منوی کناری قالب خودکار پنهان می‌شود."
 
 msgid "Usage"
 msgstr "نحوه‌ی استفاده"

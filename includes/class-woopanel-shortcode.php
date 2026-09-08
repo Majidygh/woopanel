@@ -76,7 +76,25 @@ class WooPanel_Shortcode {
 	public static function account_content() {
 		global $wp;
 
+		// Takeover routing: WooPanel-owned endpoints render the panel view
+		// instead of Woo's own templates (order emails + theme menus keep
+		// their URLs). Anything else (e.g. view-order, wishlists) still
+		// dispatches Woo's endpoint actions as usual.
+		$endpoint = '';
 		if ( ! empty( $wp->query_vars ) ) {
+			foreach ( array_keys( (array) $wp->query_vars ) as $key ) {
+				if ( has_action( 'woocommerce_account_' . $key . '_endpoint' ) ) {
+					$endpoint = $key;
+					break;
+				}
+			}
+		}
+		$map = class_exists( 'WooPanel_Takeover' ) ? WooPanel_Takeover::endpoint_map() : array();
+		if ( $endpoint && isset( $map[ $endpoint ] ) && empty( $_GET['woopanel_view'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only routing.
+			$_GET['woopanel_view'] = $map[ $endpoint ]; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- sanitized below.
+		}
+
+		if ( ! empty( $wp->query_vars ) && empty( $_GET['woopanel_view'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only routing.
 			foreach ( $wp->query_vars as $key => $value ) {
 				if ( 'pagename' === $key ) {
 					continue;

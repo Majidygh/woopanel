@@ -45,6 +45,16 @@ class WooPanel_Render {
 		$accent  = self::sanitize_hex_color( $options['accent'], '#0d7a6f' );
 		$bg      = self::sanitize_hex_color( $options['accent_bg'], '#e4f2ef' );
 
+		// "Follow the site theme" — resolve the store's own brand color.
+		$auto = ( isset( $options['accent_mode'] ) && 'auto' === $options['accent_mode'] );
+		if ( $auto ) {
+			$site = function_exists( 'woopanel_site_accent' ) ? woopanel_site_accent() : false;
+			if ( $site && preg_match( '/^#[0-9a-f]{6}$/i', $site ) ) {
+				$accent = $site;
+				$bg     = woopanel_derive_soft( $site );
+			}
+		}
+
 		$css = sprintf(
 			'.wpl-panel{--wpl-accent:%1$s;--wpl-accent-soft:%2$s;--wpl-accent-rgb:%3$d %4$d %5$d;}',
 			$accent,
@@ -73,17 +83,35 @@ class WooPanel_Render {
 	}
 
 	/**
-	 * True on the default WooCommerce My Account dashboard endpoint with takeover on.
+	 * True on the WooCommerce My Account pages served by the WooPanel takeover
+	 * (dashboard and every routed endpoint).
 	 *
 	 * @return bool
 	 */
 	private static function is_my_account_takeover() {
 		$options = woopanel_get_options();
-		return ! empty( $options['replace_dashboard'] )
-			&& function_exists( 'is_account_page' )
-			&& is_account_page()
-			&& function_exists( 'is_wc_endpoint_url' )
-			&& ! is_wc_endpoint_url();
+		if ( empty( $options['replace_dashboard'] )
+			|| ! function_exists( 'is_account_page' )
+			|| ! is_account_page() ) {
+			return false;
+		}
+		// Logged-out visitors see Woo's own login/register on the account page.
+		if ( ! is_user_logged_in() ) {
+			return false;
+		}
+		// Endpoints WooPanel doesn't own (view-order, wishlists, …) stay Woo-native.
+		if ( function_exists( 'is_wc_endpoint_url' ) && is_wc_endpoint_url() ) {
+			global $wp;
+			$map = class_exists( 'WooPanel_Takeover' ) ? WooPanel_Takeover::endpoint_map() : array();
+			unset( $map[''] );
+			foreach ( array_keys( (array) $wp->query_vars ) as $key ) {
+				if ( isset( $map[ $key ] ) ) {
+					return true;
+				}
+			}
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -109,9 +137,10 @@ class WooPanel_Render {
 		$msg     = isset( $_GET['woopanel_msg'] ) ? sanitize_key( wp_unslash( $_GET['woopanel_msg'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only notice code.
 		$notice  = $msg ? woopanel_notice_for( $msg ) : array( 'info', '' );
 
+		$auto_attr = ( isset( $options['accent_mode'] ) && 'auto' === $options['accent_mode'] ) ? ' data-wpl-auto-accent="1"' : '';
 		ob_start();
 		?>
-		<div class="wpl-panel wpl-panel--<?php echo esc_attr( $context ); ?>" data-woopanel>
+		<div class="wpl-panel wpl-panel--<?php echo esc_attr( $context ); ?>" data-woopanel<?php echo $auto_attr; // phpcs:ignore WordPress.Security.EscapeOutput -- static attribute. ?>>
 			<div class="wpl-shell">
 				<?php self::sidebar( $view, $user, $options ); ?>
 				<main class="wpl-main">

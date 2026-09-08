@@ -3,7 +3,7 @@
  * Plugin Name:       WooPanel
  * Plugin URI:        https://github.com/Majidygh/woopanel
  * Description:       Modern user dashboard for WooCommerce — orders, downloads, addresses and account settings in one clean panel. RTL-ready, dark mode, zero build step.
- * Version:           1.3.0
+ * Version:           1.4.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            majidygh
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'WOOPANEL_VERSION', '1.3.0' );
+define( 'WOOPANEL_VERSION', '1.4.0' );
 define( 'WOOPANEL_FILE', __FILE__ );
 define( 'WOOPANEL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WOOPANEL_URL', plugin_dir_url( __FILE__ ) );
@@ -38,6 +38,7 @@ require_once WOOPANEL_DIR . 'includes/class-woopanel-data.php';
 require_once WOOPANEL_DIR . 'includes/class-woopanel-forms.php';
 require_once WOOPANEL_DIR . 'includes/class-woopanel-render.php';
 require_once WOOPANEL_DIR . 'includes/class-woopanel-shortcode.php';
+require_once WOOPANEL_DIR . 'includes/class-woopanel-takeover.php';
 require_once WOOPANEL_DIR . 'includes/class-woopanel-admin.php';
 
 register_activation_hook( __FILE__, array( 'WooPanel_Options', 'add_default_options' ) );
@@ -58,18 +59,16 @@ add_action( 'init', function () {
 } );
 
 /**
- * Optional takeover of the default WooCommerce "My Account" dashboard content.
- * Off by default — endpoints stay intact, only the dashboard area is replaced.
+ * Takeover of the default WooCommerce "My Account" area — ON by default.
+ * Three layers (template swap, hook swap, endpoint routing) so it works
+ * with any theme, including ones that render their own account layout.
+ *
+ * Must run after WC's init(0) loads wc-template-hooks.php, otherwise the
+ * remove_action() calls below find nothing to remove.
  */
-add_action( 'plugins_loaded', function () {
-	$options = WooPanel_Options::get();
-	if ( empty( $options['replace_dashboard'] ) || ! WooPanel_Data::is_woo() ) {
+add_action( 'init', function () {
+	if ( ! WooPanel_Takeover::active() ) {
 		return;
 	}
-	// Core's dashboard template prints a hardcoded greeting before the
-	// woocommerce_account_dashboard hook, so replacing the hook only appends.
-	// Swap the whole account-content callback instead: endpoints keep working,
-	// only the dashboard area becomes WooPanel.
-	remove_action( 'woocommerce_account_content', 'woocommerce_account_content', 10 );
-	add_action( 'woocommerce_account_content', array( 'WooPanel_Shortcode', 'account_content' ), 10 );
-} );
+	WooPanel_Takeover::init();
+}, 20 );

@@ -28,7 +28,8 @@ class WooPanel_Options {
 		return array(
 			'accent'            => '#0d7a6f',
 			'accent_bg'         => '#e4f2ef',
-			'replace_dashboard' => 0,
+			'accent_mode'       => 'custom', // 'custom' | 'auto' (follow site theme)
+			'replace_dashboard' => 1,
 			'orders_per_page'   => 8,
 			'panel_title'       => '',
 			'welcome_text'      => '',
@@ -83,11 +84,14 @@ class WooPanel_Options {
 	 * a store owner who picked a custom accent is left untouched.
 	 */
 	public static function maybe_upgrade() {
-		if ( '2.0' === get_option( 'woopanel_theme_default_version', false ) ) {
-			return;
+		$version = (string) get_option( 'woopanel_theme_default_version', '' );
+		$saved   = get_option( self::OPTION_KEY, array() );
+		if ( ! is_array( $saved ) ) {
+			$saved = array();
 		}
-		$saved = get_option( self::OPTION_KEY, array() );
-		if ( is_array( $saved ) && ! empty( $saved ) ) {
+		$dirty = false;
+
+		if ( '2.0' !== $version ) {
 			$accent = isset( $saved['accent'] ) ? strtolower( trim( (string) $saved['accent'] ) ) : '';
 			$bg     = isset( $saved['accent_bg'] ) ? strtolower( trim( (string) $saved['accent_bg'] ) ) : '';
 			// Shipped defaults across versions: v1.0 purple, v1.2 brick.
@@ -95,10 +99,27 @@ class WooPanel_Options {
 			if ( isset( $legacy[ $accent ] ) && $legacy[ $accent ] === $bg ) {
 				$saved['accent']    = '#0d7a6f';
 				$saved['accent_bg'] = '#e4f2ef';
-				update_option( self::OPTION_KEY, $saved );
+				$dirty = true;
 			}
 		}
-		update_option( 'woopanel_theme_default_version', '2.0' );
+
+		if ( version_compare( $version, '3.0', '<' ) ) {
+			// v1.4: takeover became the product's core promise. A stored 0
+			// predates the feature being on-by-default — it was never an
+			// explicit opt-out, so flip it once. Turning it off afterwards
+			// sticks (marker already at 3.0).
+			if ( array_key_exists( 'replace_dashboard', $saved ) && empty( $saved['replace_dashboard'] ) ) {
+				$saved['replace_dashboard'] = 1;
+				$dirty = true;
+			}
+		}
+
+		if ( $dirty ) {
+			update_option( self::OPTION_KEY, $saved );
+		}
+		if ( '3.0' !== $version ) {
+			update_option( 'woopanel_theme_default_version', '3.0' );
+		}
 	}
 
 	/**
@@ -121,6 +142,9 @@ class WooPanel_Options {
 				case 'accent':
 				case 'accent_bg':
 					$out[ $key ] = WooPanel_Render::sanitize_hex_color( $input[ $key ], $default );
+					break;
+				case 'accent_mode':
+					$out[ $key ] = in_array( $input[ $key ], array( 'custom', 'auto' ), true ) ? $input[ $key ] : 'custom';
 					break;
 				case 'replace_dashboard':
 					$out[ $key ] = empty( $input[ $key ] ) ? 0 : 1;
